@@ -23,7 +23,7 @@ function renderHero(data) {
     
     const hero = data.hero;
     heroSection.innerHTML = `
-        <div class="absolute inset-0 opacity-20">
+        <div class="absolute inset-0 opacity-10">
             <img src="${hero.backgroundImage}" alt="Technology background" class="w-full h-full object-cover" loading="eager">
         </div>
         <div class="container mx-auto px-6 relative z-10">
@@ -182,64 +182,44 @@ function renderSocialLinks(data) {
     `).join('');
 }
 
-// Fetch GitHub projects
-async function fetchGitHubProjects() {
+// Render projects from JSON
+function renderProjects(data) {
     const projectsContainer = document.getElementById('github-projects');
     
-    if (!projectsContainer || !portfolioData) return;
+    if (!projectsContainer || !data || !data.projects) return;
     
-    const username = portfolioData.projectsConfig.githubUsername;
-    const unsplashImages = portfolioData.projectsConfig.unsplashImages;
+    const projects = data.projects;
     
-    try {
-        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
+    if (projects.length === 0) {
+        projectsContainer.innerHTML = '<p class="text-center text-gray-600">No projects found.</p>';
+        return;
+    }
+    
+    projectsContainer.innerHTML = projects.map((project, index) => {
+        const isEven = index % 2 === 0;
         
-        if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-        }
-        
-        const repos = await response.json();
-        
-        if (repos.length === 0) {
-            projectsContainer.innerHTML = '<p class="text-center text-gray-600">No projects found.</p>';
-            return;
-        }
-        
-        projectsContainer.innerHTML = repos.map((repo, index) => {
-            const isEven = index % 2 === 0;
-            const photoId = unsplashImages[index % unsplashImages.length];
-            const imageUrl = `https://images.unsplash.com/photo-${photoId}?w=800&h=500&fit=crop`;
-            
-            return `
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
-                    <div class="flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center">
-                        <div class="md:w-1/2">
-                            <img src="${imageUrl}" alt="${repo.name}" class="w-full h-64 object-cover" loading="lazy">
+        return `
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
+                <div class="flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center">
+                    <div class="md:w-1/2">
+                        <img src="${project.image}" alt="${project.name}" class="w-full h-64 object-cover" loading="lazy">
+                    </div>
+                    <div class="md:w-1/2 p-8">
+                        <h4 class="text-2xl font-bold text-primary mb-3">${project.name}</h4>
+                        <p class="text-gray-700 mb-4">${project.description}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${project.technologies.map(tech => 
+                                `<span class="bg-primary text-white px-3 py-1 rounded-lg text-sm shadow-md">${tech}</span>`
+                            ).join('')}
                         </div>
-                        <div class="md:w-1/2 p-8">
-                            <h4 class="text-2xl font-bold text-primary mb-3">${repo.name}</h4>
-                            <p class="text-gray-700 mb-4">${repo.description || 'No description available'}</p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                ${repo.language ? `<span class="bg-primary text-white px-3 py-1 rounded-lg text-sm shadow-md">${repo.language}</span>` : ''}
-                                <span class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-sm"><i class="fas fa-star text-secondary"></i> ${repo.stargazers_count}</span>
-                                <span class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg text-sm"><i class="fas fa-code-branch text-secondary"></i> ${repo.forks_count}</span>
-                            </div>
-                            <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="bg-secondary hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold transition shadow-md hover:shadow-lg inline-block">
-                                View on GitHub <i class="fas fa-arrow-right ml-2"></i>
-                            </a>
-                        </div>
+                        <a href="${project.link}" target="_blank" rel="noopener noreferrer" class="bg-secondary hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold transition shadow-md hover:shadow-lg inline-block">
+                            View Details <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
                     </div>
                 </div>
-            `;
-        }).join('');
-    } catch (error) {
-        console.error('Error fetching GitHub projects:', error);
-        projectsContainer.innerHTML = `
-            <div class="text-center text-red-600 py-8">
-                <p>Failed to load projects. Please try again later.</p>
             </div>
         `;
-    }
+    }).join('');
 }
 
 // Fetch Medium articles
@@ -310,14 +290,14 @@ async function initPortfolio() {
     // Render all sections that exist on current page
     renderHero(portfolioData);
     renderAbout(portfolioData);
+    renderProjects(portfolioData);
     renderExperience(portfolioData);
     renderEducation(portfolioData);
     renderCertifications(portfolioData);
     renderContact(portfolioData);
     renderSocialLinks(portfolioData);
     
-    // Fetch dynamic content
-    fetchGitHubProjects();
+    // Fetch dynamic content (Medium articles only)
     fetchMediumArticles();
 }
 

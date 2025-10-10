@@ -10,7 +10,7 @@
     "greeting": "Hi, I'm Sasidhar Chintapalli",
     "tagline": "I build scalable SaaS platforms, architect data systems, and integrate Generative AI into real-world solutions.",
     "description": "Senior Director, Product Architecture at Uniphore with 16+ years of experience in building enterprise-grade distributed systems and AI platforms.",
-    "backgroundImage": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&h=900&fit=crop",
+    "backgroundImage": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&h=600&fit=crop",
     "achievements": [
       {
         "icon": "fas fa-check-circle",
@@ -166,17 +166,52 @@
       "color": "bg-secondary hover:bg-orange-600"
     }
   ],
+  "projects": [
+    {
+      "name": "AI Platform Architecture",
+      "description": "Designed and implemented a 4-layer Business AI platform with Data, Knowledge, Model, and Application layers. Built ModelHub for Models as a Service with comprehensive governance and observability.",
+      "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=500&fit=crop",
+      "technologies": ["Python", "Kubernetes", "AI/ML", "Microservices"],
+      "link": "https://github.com/codersasi"
+    },
+    {
+      "name": "Agentic AI Platform",
+      "description": "Architected enterprise-grade Agentic AI platform enabling natural language queries on data. Implemented RAG architecture with flexible plugin system for enterprise integration.",
+      "image": "https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=800&h=500&fit=crop",
+      "technologies": ["RAG", "LLM", "Python", "FastAPI"],
+      "link": "https://github.com/codersasi"
+    },
+    {
+      "name": "Kubernetes Deployment Platform",
+      "description": "Built scalable Kubernetes-based deployment architecture with containerized services and service mesh. Developed custom Spark compute for ETL jobs on Kubernetes.",
+      "image": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&h=500&fit=crop",
+      "technologies": ["Kubernetes", "Docker", "Spark", "Service Mesh"],
+      "link": "https://github.com/codersasi"
+    },
+    {
+      "name": "Data Agents Platform",
+      "description": "Implemented Zero-Copy architecture for structured and unstructured data acquisition. Designed scalable data ingestion pipelines handling millions of records daily.",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=500&fit=crop",
+      "technologies": ["Apache Kafka", "Spark", "Python", "Data Engineering"],
+      "link": "https://github.com/codersasi"
+    },
+    {
+      "name": "Distributed System Architecture",
+      "description": "Architected high-performance distributed systems using Apache Kafka, Spark, and Hadoop. Built systems serving millions of users with 99.9% uptime.",
+      "image": "https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&h=500&fit=crop",
+      "technologies": ["Apache Kafka", "Hadoop", "Distributed Systems"],
+      "link": "https://github.com/codersasi"
+    },
+    {
+      "name": "SaaS Platform Development",
+      "description": "Developed enterprise SaaS platforms with robust authentication, multi-tenancy, and real-time analytics. Integrated AI capabilities for enhanced user experience.",
+      "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop",
+      "technologies": ["Node.js", "React", "PostgreSQL", "Redis"],
+      "link": "https://github.com/codersasi"
+    }
+  ],
   "projectsConfig": {
-    "githubUsername": "codersasi",
-    "mediumUsername": "sasidharc",
-    "unsplashImages": [
-      "1451187580459-43490279c0fa",
-      "1555066931-4365d14bab8c",
-      "1558494949-ef010cbdcc31",
-      "1504639725590-34d0984388bd",
-      "1518432031352-d934b408fa37",
-      "1526374965328-7f61d4dc18c5"
-    ]
+    "mediumUsername": "sasidharc"
   },
   "footer": {
     "copyright": "© 2025 Sasidhar Chintapalli. All rights reserved."
