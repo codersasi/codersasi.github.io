@@ -70,6 +70,11 @@ This is a personal portfolio website for Sasidhar Chintapalli, built as a single
   - fetchGitHubProjects(), fetchMediumArticles(), and loadAboutMe() check for element existence
   - Prevents errors on pages without specific sections (e.g., contact.html)
   - All pages now load cleanly without JavaScript errors
+- **Unsplash Image Integration**: Added professional stock photography
+  - Hero section: Earth from space background (photo-1451187580459) with 20% opacity overlay
+  - Projects section: 6 curated technology-themed images cycling through projects
+  - Optimized loading: hero image loads eagerly, project images use lazy loading
+  - Images properly sized (1600x900 for hero, 800x500 for projects) with crop fit
 
 ## User Preferences
 

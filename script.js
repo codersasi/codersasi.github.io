@@ -35,7 +35,7 @@ async function fetchGitHubProjects() {
                 <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
                     <div class="flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center">
                         <div class="md:w-1/2">
-                            <img src="${imageUrl}" alt="${repo.name}" class="w-full h-64 object-cover">
+                            <img src="${imageUrl}" alt="${repo.name}" class="w-full h-64 object-cover" loading="lazy">
                         </div>
                         <div class="md:w-1/2 p-8">
                             <h4 class="text-2xl font-bold text-primary mb-3">${repo.name}</h4>
