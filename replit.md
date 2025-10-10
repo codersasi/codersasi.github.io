@@ -80,8 +80,10 @@ This is a personal portfolio website for Sasidhar Chintapalli, built using vanil
   - Rewrote script.js to dynamically load and render all sections from JSON
   - All content now editable in one centralized file - no need to edit HTML
   - Removed aboutme.md - all data now in data.json
-  - GitHub username, Medium username, and Unsplash images configurable in JSON
+  - Projects now loaded from JSON (6 curated projects with descriptions, images, and technologies)
+  - Medium articles still fetched dynamically from API for latest content
   - Each page only renders sections that exist on that page (no errors on missing containers)
+  - Updated hero background to coding workspace image with subtle 10% opacity
 
 ## User Preferences
 
