@@ -10,24 +10,7 @@
     "greeting": "Hi, I'm Sasidhar Chintapalli",
     "tagline": "I build scalable SaaS platforms, architect data systems, and integrate Generative AI into real-world solutions.",
     "description": "Senior Director, Product Architecture at Uniphore with 16+ years of experience in building enterprise-grade distributed systems and AI platforms.",
-    "backgroundImage": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&h=600&fit=crop",
-    "achievements": [
-      {
-        "icon": "fas fa-check-circle",
-        "title": "AI Platform Architect",
-        "description": "Leading Uniphore's Business AI platform with 4-layer architecture"
-      },
-      {
-        "icon": "fas fa-check-circle",
-        "title": "Enterprise Scale",
-        "description": "Built Kubernetes-based deployments serving millions of users"
-      },
-      {
-        "icon": "fas fa-check-circle",
-        "title": "Innovation Leader",
-        "description": "Pioneered RAG architecture and Agentic AI solutions"
-      }
-    ]
+    "backgroundImage": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=500&fit=crop"
   },
   "about": {
     "bio": "Seasoned Software Architect and Full-Stack Developer with over 16 years of experience in designing and building scalable, high-performance web applications and distributed systems. Passionate about creating elegant solutions that balance technical excellence with user experience and business value.",

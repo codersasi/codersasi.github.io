@@ -23,31 +23,15 @@ function renderHero(data) {
     
     const hero = data.hero;
     heroSection.innerHTML = `
-        <div class="absolute inset-0 opacity-10">
-            <img src="${hero.backgroundImage}" alt="Technology background" class="w-full h-full object-cover" loading="eager">
-        </div>
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2 text-center md:text-left">
-                    <h2 class="text-5xl md:text-6xl font-bold mb-6">${hero.greeting}</h2>
-                    <p class="text-xl md:text-2xl mb-6">${hero.tagline}</p>
-                    <p class="text-lg opacity-90">${hero.description}</p>
+        <div class="container mx-auto px-6 py-12">
+            <div class="flex flex-col items-center text-center">
+                <div class="mb-8">
+                    <img src="${hero.backgroundImage}" alt="Developer illustration" class="w-full max-w-md mx-auto rounded-lg" loading="eager">
                 </div>
-                <div class="md:w-1/2">
-                    <div class="bg-white rounded-2xl p-8 shadow-2xl text-gray-900">
-                        <h3 class="text-2xl font-bold mb-6 text-center text-gray-900">Key Achievements</h3>
-                        <div class="space-y-4">
-                            ${hero.achievements.map(achievement => `
-                                <div class="flex items-start gap-3">
-                                    <i class="${achievement.icon} text-secondary text-2xl mt-1"></i>
-                                    <div>
-                                        <h4 class="font-semibold text-lg text-gray-900">${achievement.title}</h4>
-                                        <p class="text-sm text-gray-700">${achievement.description}</p>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
+                <div class="max-w-3xl">
+                    <h2 class="text-5xl md:text-6xl font-bold mb-6">${hero.greeting}</h2>
+                    <p class="text-xl md:text-2xl mb-4">${hero.tagline}</p>
+                    ${hero.description ? `<p class="text-lg opacity-90">${hero.description}</p>` : ''}
                 </div>
             </div>
         </div>
