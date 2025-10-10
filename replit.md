@@ -50,6 +50,15 @@ This is a personal portfolio website for Sasidhar Chintapalli, built using vanil
   - Changed primary teal from #14B8A6 to #5EBBAD (softer, more subtle)
   - Changed navbar from teal to dark gray (#1F2937) for better contrast with light background
   - Updated navbar color across all pages (index.html, experience.html, contact.html)
+- **Hero Section Redesign**: Simplified hero to match reference website style
+  - Changed from full-width background to centered illustration (800x500px)
+  - Now uses Unsplash coding workspace image (no CORS issues)
+  - Clean centered layout: image, greeting, tagline, description
+  - Removed Key Achievements card for simpler, cleaner design
+- **Navigation Enhancements**: Improved navbar across all pages
+  - Added "Home" link to navbar for easy return to main page
+  - Renamed "Experience & Education" to "Career" for professional brevity
+  - Updated page title from "Experience & Education - " to "Career - "
 - **Hero Section Simplification**: Removed CTA buttons ("View My Work" and "My Experience")
   - Navigation only accessible through top navbar
   - Cleaner, more focused hero design
