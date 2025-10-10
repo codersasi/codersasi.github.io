@@ -1,0 +1,184 @@
+{
+  "personal": {
+    "name": "Sasidhar Chintapalli",
+    "title": "Senior Director, Product Architecture at Uniphore",
+    "location": "Bengaluru, Karnataka, India",
+    "email": "sasi.ch85@gmail.com",
+    "profileImage": "https://ui-avatars.com/api/?name=Sasidhar+Chintapalli&background=14B8A6&color=fff&size=192"
+  },
+  "hero": {
+    "greeting": "Hi, I'm Sasidhar Chintapalli",
+    "tagline": "I build scalable SaaS platforms, architect data systems, and integrate Generative AI into real-world solutions.",
+    "description": "Senior Director, Product Architecture at Uniphore with 16+ years of experience in building enterprise-grade distributed systems and AI platforms.",
+    "backgroundImage": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&h=900&fit=crop",
+    "achievements": [
+      {
+        "icon": "fas fa-check-circle",
+        "title": "AI Platform Architect",
+        "description": "Leading Uniphore's Business AI platform with 4-layer architecture"
+      },
+      {
+        "icon": "fas fa-check-circle",
+        "title": "Enterprise Scale",
+        "description": "Built Kubernetes-based deployments serving millions of users"
+      },
+      {
+        "icon": "fas fa-check-circle",
+        "title": "Innovation Leader",
+        "description": "Pioneered RAG architecture and Agentic AI solutions"
+      }
+    ]
+  },
+  "about": {
+    "bio": "Seasoned Software Architect and Full-Stack Developer with over 16 years of experience in designing and building scalable, high-performance web applications and distributed systems. Passionate about creating elegant solutions that balance technical excellence with user experience and business value.",
+    "skills": [
+      "Distributed Systems",
+      "Apache (Spark, Kafka, Hadoop)",
+      "System Architecture",
+      "Web Development",
+      "Cloud Computing",
+      "Python/Java",
+      "DevOps & CI/CD",
+      "Database Design",
+      "RESTful APIs"
+    ]
+  },
+  "experience": [
+    {
+      "title": "Senior Director, Product Architecture",
+      "company": "Uniphore",
+      "period": "January 2025 - Present",
+      "responsibilities": [
+        "Architecting Uniphore's Business AI platform built on a 4-layer architecture: Data, Knowledge, Model, and Application layers",
+        "<strong>ModeHub</strong>: Platformizing the model layer with Models as a Service, enabling model development/fine-tuning, serving, inference, governance, and cost/performance observability",
+        "<strong>Data Agents</strong>: Implementing a Zero-Copy architecture for structured and unstructured data acquisition",
+        "<strong>Platform Redesign</strong>: Enhancing the existing platform for scale, performance, and stability"
+      ]
+    },
+    {
+      "title": "Head of Product Architecture, Office of CTO",
+      "company": "Infoworks.io",
+      "period": "June 2024 - January 2025",
+      "responsibilities": [
+        "Spearheaded the development of Infoworks AI (ai.infoworks.io), a cutting-edge SaaS platform",
+        "Architected enterprise-grade Agentic AI platform enabling 'Ask Your Data' through natural language queries",
+        "Implemented robust RAG (Retrieval-Augmented Generation) architecture",
+        "Designed flexible plugin architecture for seamless enterprise integration"
+      ]
+    },
+    {
+      "title": "Architect",
+      "company": "Infoworks.io",
+      "period": "January 2021 - May 2024",
+      "responsibilities": [
+        "Architected Kubernetes-based deployment for scalability and reliability",
+        "Containerized all services with service mesh architecture",
+        "Developed custom Spark compute for ETL jobs on Kubernetes"
+      ]
+    },
+    {
+      "title": "Principal Software Engineer",
+      "company": "Think & Learn (Byju's)",
+      "period": "Dec 2015 - Aug 2016",
+      "responsibilities": [
+        "Worked on A/B testing framework and marketing integrations"
+      ]
+    },
+    {
+      "title": "Principal Software Engineer",
+      "company": "Housing.com",
+      "period": "May 2015 - Nov 2015",
+      "responsibilities": [
+        "Designed and developed e-commerce platform for real estate"
+      ]
+    },
+    {
+      "title": "Principal/Senior Software Engineer",
+      "company": "Zynga",
+      "period": "2011 - 2015",
+      "responsibilities": [
+        "Worked on games like DrawSomething, CastleVille, Empires & Allies"
+      ]
+    },
+    {
+      "title": "Senior System Engineer",
+      "company": "Yahoo",
+      "period": "2008 - 2011",
+      "responsibilities": [
+        "Worked on web services and content management systems"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Master of Technology (MTech)",
+      "field": "Computer Science",
+      "institution": "International Institute of Information Technology",
+      "period": "2006 - 2008"
+    },
+    {
+      "degree": "Bachelor of Technology (BTech)",
+      "field": "Computer Science",
+      "institution": "Sasi Institute of Technology & Engineering",
+      "period": "2002 - 2006"
+    }
+  ],
+  "certifications": [
+    {
+      "title": "Generative AI with Large Language Models",
+      "issuer": "DeepLearning.AI & AWS",
+      "description": "Specialized training in building and optimizing large language models"
+    },
+    {
+      "title": "Red Hat Certified System Administrator (RHCSA)",
+      "issuer": "Red Hat",
+      "description": "Certified in essential system administration skills on Red Hat Enterprise Linux"
+    },
+    {
+      "title": "MySQL Database Administrator",
+      "issuer": "Oracle",
+      "description": "Certified in MySQL database administration, performance tuning, and security"
+    }
+  ],
+  "contact": {
+    "email": "sasi.ch85@gmail.com",
+    "location": "Bengaluru, Karnataka, India",
+    "heading": "Get In Touch",
+    "subheading": "Have a question or want to work together? I'd love to hear from you. Send me a message and I'll respond as soon as possible."
+  },
+  "social": [
+    {
+      "name": "LinkedIn",
+      "url": "https://www.linkedin.com/in/sasich",
+      "icon": "fab fa-linkedin",
+      "color": "bg-primary hover:bg-teal-700"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/codersasi",
+      "icon": "fab fa-github",
+      "color": "bg-gray-800 hover:bg-gray-900"
+    },
+    {
+      "name": "Medium",
+      "url": "https://medium.com/@sasidharc",
+      "icon": "fab fa-medium",
+      "color": "bg-secondary hover:bg-orange-600"
+    }
+  ],
+  "projectsConfig": {
+    "githubUsername": "codersasi",
+    "mediumUsername": "sasidharc",
+    "unsplashImages": [
+      "1451187580459-43490279c0fa",
+      "1555066931-4365d14bab8c",
+      "1558494949-ef010cbdcc31",
+      "1504639725590-34d0984388bd",
+      "1518432031352-d934b408fa37",
+      "1526374965328-7f61d4dc18c5"
+    ]
+  },
+  "footer": {
+    "copyright": "© 2025 Sasidhar Chintapalli. All rights reserved."
+  }
+}

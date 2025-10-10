@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a personal portfolio website for Sasidhar Chintapalli, built as a single-page application (SPA) using vanilla HTML, CSS (Tailwind), and JavaScript. The site showcases professional experience, education, certifications, projects, and blog posts. It dynamically fetches data from external APIs (GitHub and Medium) to display the latest projects and articles.
+This is a personal portfolio website for Sasidhar Chintapalli, built using vanilla HTML, CSS (Tailwind), and JavaScript with a JSON-based data architecture. All portfolio content is stored in a centralized data.json file, making it easy to update without touching code. The site dynamically loads content from JSON and fetches live data from external APIs (GitHub and Medium) to display the latest projects and articles.
 
 ## Recent Changes
 
@@ -75,6 +75,13 @@ This is a personal portfolio website for Sasidhar Chintapalli, built as a single
   - Projects section: 6 curated technology-themed images cycling through projects
   - Optimized loading: hero image loads eagerly, project images use lazy loading
   - Images properly sized (1600x900 for hero, 800x500 for projects) with crop fit
+- **JSON-Based Data Architecture**: Restructured to load all content from data.json
+  - Created comprehensive data.json with all portfolio content (personal, hero, about, experience, education, certifications, contact, social, config)
+  - Rewrote script.js to dynamically load and render all sections from JSON
+  - All content now editable in one centralized file - no need to edit HTML
+  - Removed aboutme.md - all data now in data.json
+  - GitHub username, Medium username, and Unsplash images configurable in JSON
+  - Each page only renders sections that exist on that page (no errors on missing containers)
 
 ## User Preferences
 
@@ -92,9 +99,11 @@ Preferred communication style: Simple, everyday language.
 - Node.js (for Tailwind CLI and build process)
 
 **Design Pattern:**
-- Single-page application with section-based navigation
+- Multi-page application with centralized JSON data architecture
+- All content stored in data.json for easy updates
 - Mobile-first responsive design with sticky navigation
 - Dynamic content loading via async/await patterns
+- Conditional rendering based on page context (no errors on missing elements)
 
 **Color Scheme:**
 - Primary: Teal (#5EBBAD) - Subtle, professional shade

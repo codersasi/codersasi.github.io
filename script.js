@@ -1,8 +1,195 @@
+// Global data variable
+let portfolioData = null;
+
+// Load portfolio data from JSON
+async function loadPortfolioData() {
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) {
+            throw new Error(`Failed to load data.json: ${response.status}`);
+        }
+        portfolioData = await response.json();
+        return portfolioData;
+    } catch (error) {
+        console.error('Error loading portfolio data:', error);
+        return null;
+    }
+}
+
+// Render hero section
+function renderHero(data) {
+    const heroSection = document.querySelector('.relative.bg-gradient-to-br');
+    if (!heroSection || !data) return;
+    
+    const hero = data.hero;
+    heroSection.innerHTML = `
+        <div class="absolute inset-0 opacity-20">
+            <img src="${hero.backgroundImage}" alt="Technology background" class="w-full h-full object-cover" loading="eager">
+        </div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2 text-center md:text-left">
+                    <h2 class="text-5xl md:text-6xl font-bold mb-6">${hero.greeting}</h2>
+                    <p class="text-xl md:text-2xl mb-6">${hero.tagline}</p>
+                    <p class="text-lg opacity-90">${hero.description}</p>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="bg-white rounded-2xl p-8 shadow-2xl text-gray-900">
+                        <h3 class="text-2xl font-bold mb-6 text-center text-gray-900">Key Achievements</h3>
+                        <div class="space-y-4">
+                            ${hero.achievements.map(achievement => `
+                                <div class="flex items-start gap-3">
+                                    <i class="${achievement.icon} text-secondary text-2xl mt-1"></i>
+                                    <div>
+                                        <h4 class="font-semibold text-lg text-gray-900">${achievement.title}</h4>
+                                        <p class="text-sm text-gray-700">${achievement.description}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Render about section
+function renderAbout(data) {
+    const aboutBio = document.getElementById('about-bio');
+    const aboutSkills = document.getElementById('about-skills');
+    const profileImage = document.querySelector('.rounded-full');
+    const profileName = document.querySelector('#about h4');
+    const profileTitle = document.querySelector('#about .text-gray-600');
+    const profileLocation = document.querySelector('#about .text-gray-500');
+    
+    if (!data) return;
+    
+    if (aboutBio) {
+        aboutBio.textContent = data.about.bio;
+    }
+    
+    if (aboutSkills) {
+        aboutSkills.innerHTML = data.about.skills.map(skill => 
+            `<span class="bg-primary text-white px-4 py-2 rounded-lg text-sm shadow-md hover:shadow-lg transition-shadow">${skill}</span>`
+        ).join('');
+    }
+    
+    if (profileImage) {
+        profileImage.src = data.personal.profileImage;
+        profileImage.alt = data.personal.name;
+    }
+    
+    if (profileName) {
+        profileName.textContent = data.personal.name;
+    }
+    
+    if (profileTitle) {
+        profileTitle.textContent = data.personal.title;
+    }
+    
+    if (profileLocation) {
+        profileLocation.textContent = data.personal.location;
+    }
+}
+
+// Render experience section
+function renderExperience(data) {
+    const experienceContainer = document.querySelector('#experience .space-y-6');
+    if (!experienceContainer || !data) return;
+    
+    experienceContainer.innerHTML = data.experience.map(job => `
+        <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-secondary hover:shadow-xl transition-shadow duration-300">
+            <h4 class="text-2xl font-bold text-primary">${job.title}</h4>
+            <p class="text-gray-600 mb-2">${job.company} | ${job.period}</p>
+            ${job.responsibilities.length > 1 ? `
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    ${job.responsibilities.map(resp => `<li>${resp}</li>`).join('')}
+                </ul>
+            ` : `
+                <p class="text-gray-700">${job.responsibilities[0]}</p>
+            `}
+        </div>
+    `).join('');
+}
+
+// Render education section
+function renderEducation(data) {
+    const educationContainer = document.querySelector('#education .grid');
+    if (!educationContainer || !data) return;
+    
+    educationContainer.innerHTML = data.education.map(edu => `
+        <div class="bg-gray-50 p-6 rounded-lg shadow-lg border-t-4 border-secondary hover:shadow-xl transition-shadow duration-300">
+            <h4 class="text-2xl font-bold text-primary mb-2">${edu.degree}</h4>
+            <p class="text-gray-600 mb-2">${edu.field}</p>
+            <p class="text-gray-700">${edu.institution}</p>
+            <p class="text-gray-500">${edu.period}</p>
+        </div>
+    `).join('');
+}
+
+// Render certifications section
+function renderCertifications(data) {
+    const certsContainer = document.querySelector('#certifications .grid');
+    if (!certsContainer || !data) return;
+    
+    certsContainer.innerHTML = data.certifications.map(cert => `
+        <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-secondary hover:shadow-xl transition-shadow duration-300">
+            <h4 class="text-xl font-bold text-primary mb-2">${cert.title}</h4>
+            <p class="text-gray-600 mb-2">${cert.issuer}</p>
+            <p class="text-gray-700">${cert.description}</p>
+        </div>
+    `).join('');
+}
+
+// Render contact section
+function renderContact(data) {
+    const contactHeading = document.querySelector('.py-24 h2');
+    const contactSubheading = document.querySelector('.py-24 p');
+    const emailLink = document.querySelector('a[href^="mailto:"]');
+    const locationText = document.querySelector('.fa-map-marker-alt + div p');
+    
+    if (!data) return;
+    
+    if (contactHeading) {
+        contactHeading.textContent = data.contact.heading;
+    }
+    
+    if (contactSubheading) {
+        contactSubheading.textContent = data.contact.subheading;
+    }
+    
+    if (emailLink) {
+        emailLink.href = `mailto:${data.contact.email}`;
+        emailLink.textContent = data.contact.email;
+    }
+    
+    if (locationText) {
+        locationText.textContent = data.contact.location;
+    }
+}
+
+// Render social links
+function renderSocialLinks(data) {
+    const socialContainer = document.querySelector('.flex.flex-wrap.gap-4');
+    if (!socialContainer || !data) return;
+    
+    socialContainer.innerHTML = data.social.map(social => `
+        <a href="${social.url}" target="_blank" rel="noopener noreferrer" 
+           class="flex items-center gap-2 ${social.color} text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg hover:shadow-xl">
+            <i class="${social.icon} text-xl"></i>${social.name}
+        </a>
+    `).join('');
+}
+
+// Fetch GitHub projects
 async function fetchGitHubProjects() {
-    const username = 'codersasi';
     const projectsContainer = document.getElementById('github-projects');
     
-    if (!projectsContainer) return;
+    if (!projectsContainer || !portfolioData) return;
+    
+    const username = portfolioData.projectsConfig.githubUsername;
+    const unsplashImages = portfolioData.projectsConfig.unsplashImages;
     
     try {
         const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`);
@@ -20,14 +207,6 @@ async function fetchGitHubProjects() {
         
         projectsContainer.innerHTML = repos.map((repo, index) => {
             const isEven = index % 2 === 0;
-            const unsplashImages = [
-                '1451187580459-43490279c0fa',
-                '1555066931-4365d14bab8c',
-                '1558494949-ef010cbdcc31',
-                '1504639725590-34d0984388bd',
-                '1518432031352-d934b408fa37',
-                '1526374965328-7f61d4dc18c5'
-            ];
             const photoId = unsplashImages[index % unsplashImages.length];
             const imageUrl = `https://images.unsplash.com/photo-${photoId}?w=800&h=500&fit=crop`;
             
@@ -63,11 +242,13 @@ async function fetchGitHubProjects() {
     }
 }
 
+// Fetch Medium articles
 async function fetchMediumArticles() {
-    const username = 'sasidharc';
     const articlesContainer = document.getElementById('medium-articles');
     
-    if (!articlesContainer) return;
+    if (!articlesContainer || !portfolioData) return;
+    
+    const username = portfolioData.projectsConfig.mediumUsername;
     
     try {
         const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@${username}`);
@@ -116,59 +297,32 @@ async function fetchMediumArticles() {
     }
 }
 
-async function loadAboutMe() {
-    const bioElement = document.getElementById('about-bio');
-    const skillsElement = document.getElementById('about-skills');
+// Initialize portfolio
+async function initPortfolio() {
+    // Load data first
+    await loadPortfolioData();
     
-    if (!bioElement && !skillsElement) return;
-    
-    try {
-        const response = await fetch('aboutme.md');
-        if (!response.ok) {
-            throw new Error(`Failed to load aboutme.md: ${response.status}`);
-        }
-        
-        const markdown = await response.text();
-        
-        const lines = markdown.split('\n');
-        let bio = '';
-        let skills = [];
-        let inSkillsSection = false;
-        
-        lines.forEach(line => {
-            if (line.startsWith('# ')) {
-                return;
-            }
-            if (line.startsWith('## Technical Expertise')) {
-                inSkillsSection = true;
-                return;
-            }
-            if (inSkillsSection && line.startsWith('- ')) {
-                skills.push(line.substring(2).trim());
-            } else if (line.trim() && !line.startsWith('#')) {
-                bio += line + ' ';
-            }
-        });
-        
-        if (bioElement) {
-            bioElement.textContent = bio.trim();
-        }
-        
-        if (skillsElement) {
-            skillsElement.innerHTML = skills.map(skill => 
-                `<span class="bg-primary text-white px-4 py-2 rounded-lg text-sm shadow-md hover:shadow-lg transition-shadow">${skill}</span>`
-            ).join('');
-        }
-    } catch (error) {
-        console.error('Error loading About Me:', error);
+    if (!portfolioData) {
+        console.error('Failed to load portfolio data');
+        return;
     }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadAboutMe();
+    
+    // Render all sections that exist on current page
+    renderHero(portfolioData);
+    renderAbout(portfolioData);
+    renderExperience(portfolioData);
+    renderEducation(portfolioData);
+    renderCertifications(portfolioData);
+    renderContact(portfolioData);
+    renderSocialLinks(portfolioData);
+    
+    // Fetch dynamic content
     fetchGitHubProjects();
     fetchMediumArticles();
-    
+}
+
+// Mobile menu toggle
+function initMobileMenu() {
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const mobileNav = document.getElementById('mobile-nav');
     
@@ -183,7 +337,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-    
+}
+
+// Smooth scrolling
+function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -193,4 +350,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initPortfolio();
+    initMobileMenu();
+    initSmoothScroll();
 });
