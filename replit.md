@@ -63,9 +63,11 @@ This is a personal portfolio website for Sasidhar Chintapalli, built using vanil
   - Navigation only accessible through top navbar
   - Cleaner, more focused hero design
 - **Section Reordering**: Restructured content hierarchy
-  - New order: Hero → Projects → About → Blog → Certifications
-  - Projects now appear immediately after hero section for better impact
+  - New order: Hero → About → Projects → Blog → Certifications
+  - About Me now appears immediately after hero section
+  - Projects section follows About Me
   - Certifications moved to end as supporting credentials
+  - Navigation menu updated to reflect new section order
 - **Contact Page**: Created separate contact.html page
   - Full contact form with name, email, subject, and message fields
   - Contact information and social media links
