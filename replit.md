@@ -122,6 +122,19 @@ This is a personal portfolio website for Sasidhar Chintapalli, built using vanil
   - Main menu: Home → About Me → Projects → Blog → Contact
   - Removed "Career" from navbar (still accessible via experience.html page)
   - Consistent navigation order across all pages
+- **About Me Section Enhancements**: Improved spacing and tag styling
+  - Increased spacing between profile picture and name (gap-10) for better visual separation
+  - Updated Technical Expertise tags with light teal background, white text, and shadow effects
+  - Added hover transitions on skill tags for better interactivity
+- **New Achievements Section**: Added Key Achievements & Impact section
+  - Displays 4 key metrics: 10M+ Users Served, 40% Cost Reduction, 60% Performance Boost, 50+ Teams Led
+  - Uses 4-column grid layout with icon, number, title, and description
+  - Teal numbers with orange icons for visual hierarchy
+- **New Case Studies Section**: Added detailed project case studies
+  - Two comprehensive case studies with Challenge → Solution → Impact structure
+  - Alternating left/right image layout for visual interest
+  - Each case study includes client, problem statement, solution details, measurable impact, and technology stack
+  - Technologies displayed as teal tags with white text
 
 ## User Preferences
 
