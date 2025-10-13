@@ -51,35 +51,34 @@ function renderAbout(data) {
         <div class="container mx-auto px-6">
             <h3 class="text-4xl font-bold mb-12 text-gray-900">About Me</h3>
             <div class="bg-white rounded-xl shadow-xl p-8">
-                <div class="grid md:grid-cols-12 gap-8">
-                    <div class="md:col-span-3 text-center">
-                        <img src="${data.personal.profileImage}" alt="${data.personal.name}" class="rounded-full mx-auto mb-4 w-48 h-48 border-4 border-secondary shadow-lg">
-                    </div>
-                    <div class="md:col-span-9">
+                <div class="flex items-center gap-6 mb-8">
+                    <img src="${data.personal.profileImage}" alt="${data.personal.name}" class="rounded-full w-32 h-32 border-4 border-secondary shadow-lg flex-shrink-0">
+                    <div>
                         <h4 class="text-3xl font-bold mb-2">${data.personal.name}</h4>
-                        <p class="text-secondary text-lg mb-2">${data.personal.title}</p>
-                        <p class="text-gray-600 mb-6">${data.personal.location}</p>
-                        <p class="text-gray-700 mb-6">${data.about.bio}</p>
-                        
-                        <div class="mb-6">
-                            <h5 class="text-xl font-bold mb-3">Technical Expertise</h5>
-                            <div class="flex flex-wrap gap-2">
-                                ${data.about.skills.map(skill => 
-                                    `<span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-sm">${skill}</span>`
-                                ).join('')}
-                            </div>
-                        </div>
-                        
-                        ${approachList ? `
-                        <div>
-                            <h5 class="text-xl font-bold mb-3">Design & Development Approach</h5>
-                            <ul class="list-disc list-inside space-y-2">
-                                ${approachList}
-                            </ul>
-                        </div>
-                        ` : ''}
+                        <p class="text-secondary text-lg mb-1">${data.personal.title}</p>
+                        <p class="text-gray-600">${data.personal.location}</p>
                     </div>
                 </div>
+                
+                <p class="text-gray-700 mb-6">${data.about.bio}</p>
+                
+                <div class="mb-6">
+                    <h5 class="text-xl font-bold mb-3">Technical Expertise</h5>
+                    <div class="flex flex-wrap gap-2">
+                        ${data.about.skills.map(skill => 
+                            `<span class="bg-primary/20 text-primary px-4 py-2 rounded-lg text-sm font-medium">${skill}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                ${approachList ? `
+                <div>
+                    <h5 class="text-xl font-bold mb-3">Design & Development Approach</h5>
+                    <ul class="list-disc list-inside space-y-2">
+                        ${approachList}
+                    </ul>
+                </div>
+                ` : ''}
             </div>
         </div>
     `;
