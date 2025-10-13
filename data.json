@@ -4,13 +4,13 @@
     "title": "Senior Director, Product Architecture at Uniphore",
     "location": "Bengaluru, Karnataka, India",
     "email": "sasi.ch85@gmail.com",
-    "profileImage": "https://ui-avatars.com/api/?name=Sasidhar+Chintapalli&background=14B8A6&color=fff&size=192"
+    "profileImage": "https://ui-avatars.com/api/?name=SC&background=2563EB&color=fff&size=200&bold=true&font-size=0.5"
   },
   "hero": {
     "greeting": "Hi, I'm Sasidhar Chintapalli",
     "tagline": "I build scalable SaaS platforms, architect data systems, and integrate Generative AI into real-world solutions.",
     "description": "Senior Director, Product Architecture at Uniphore with 16+ years of experience in building enterprise-grade distributed systems and AI platforms.",
-    "backgroundImage": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=500&fit=crop"
+    "backgroundImage": "https://img.freepik.com/free-vector/web-development-programmer-engineering-coding-website-augmented-reality-interface-screens-developer-project-engineer-programming-software-application-design-cartoon-illustration_107791-3863.jpg"
   },
   "about": {
     "bio": "Seasoned Software Architect and Full-Stack Developer with over 16 years of experience in designing and building scalable, high-performance web applications and distributed systems. Passionate about creating elegant solutions that balance technical excellence with user experience and business value.",
@@ -24,6 +24,13 @@
       "DevOps & CI/CD",
       "Database Design",
       "RESTful APIs"
+    ],
+    "approach": [
+      "User-centered design principles with a focus on intuitive interfaces",
+      "Clean, maintainable code following SOLID principles and design patterns",
+      "Test-Driven Development (TDD) to ensure code quality and reliability",
+      "Performance optimization and scalability considerations from day one",
+      "Scalable microservices architecture with containerization and orchestration"
     ]
   },
   "experience": [

@@ -18,20 +18,20 @@ async function loadPortfolioData() {
 
 // Render hero section
 function renderHero(data) {
-    const heroSection = document.querySelector('.relative.bg-gradient-to-br');
+    const heroSection = document.querySelector('.hero-section');
     if (!heroSection || !data) return;
     
     const hero = data.hero;
     heroSection.innerHTML = `
-        <div class="container mx-auto px-6 py-12">
-            <div class="flex flex-col items-center text-center">
-                <div class="mb-8">
-                    <img src="${hero.backgroundImage}" alt="Developer illustration" class="w-full max-w-md mx-auto rounded-lg" loading="eager">
+        <div class="container mx-auto px-6 py-20">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <img src="${hero.backgroundImage}" alt="Developer illustration" class="w-full max-w-md mx-auto" loading="eager">
                 </div>
-                <div class="max-w-3xl">
-                    <h2 class="text-5xl md:text-6xl font-bold mb-6">${hero.greeting}</h2>
-                    <p class="text-xl md:text-2xl mb-4">${hero.tagline}</p>
-                    ${hero.description ? `<p class="text-lg opacity-90">${hero.description}</p>` : ''}
+                <div class="order-1 md:order-2">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6 text-secondary">${hero.greeting}</h1>
+                    <p class="text-lg md:text-xl mb-8 text-gray-700">${hero.tagline}</p>
+                    <a href="#projects" class="inline-block bg-secondary hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition">View My Work</a>
                 </div>
             </div>
         </div>
@@ -40,6 +40,55 @@ function renderHero(data) {
 
 // Render about section
 function renderAbout(data) {
+    const aboutSection = document.getElementById('about');
+    if (!aboutSection || !data) return;
+    
+    const approachList = data.about.approach ? data.about.approach.map(item => 
+        `<li class="text-gray-700">${item}</li>`
+    ).join('') : '';
+    
+    const aboutContent = `
+        <div class="container mx-auto px-6">
+            <h3 class="text-4xl font-bold mb-12 text-gray-900">About Me</h3>
+            <div class="bg-white rounded-xl shadow-xl p-8">
+                <div class="grid md:grid-cols-12 gap-8">
+                    <div class="md:col-span-3 text-center">
+                        <img src="${data.personal.profileImage}" alt="${data.personal.name}" class="rounded-full mx-auto mb-4 w-48 h-48 border-4 border-secondary shadow-lg">
+                    </div>
+                    <div class="md:col-span-9">
+                        <h4 class="text-3xl font-bold mb-2">${data.personal.name}</h4>
+                        <p class="text-secondary text-lg mb-2">${data.personal.title}</p>
+                        <p class="text-gray-600 mb-6">${data.personal.location}</p>
+                        <p class="text-gray-700 mb-6">${data.about.bio}</p>
+                        
+                        <div class="mb-6">
+                            <h5 class="text-xl font-bold mb-3">Technical Expertise</h5>
+                            <div class="flex flex-wrap gap-2">
+                                ${data.about.skills.map(skill => 
+                                    `<span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-sm">${skill}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        ${approachList ? `
+                        <div>
+                            <h5 class="text-xl font-bold mb-3">Design & Development Approach</h5>
+                            <ul class="list-disc list-inside space-y-2">
+                                ${approachList}
+                            </ul>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    aboutSection.innerHTML = aboutContent;
+}
+
+// Legacy about rendering (fallback)
+function renderAboutLegacy(data) {
     const aboutBio = document.getElementById('about-bio');
     const aboutSkills = document.getElementById('about-skills');
     const profileImage = document.querySelector('.rounded-full');
@@ -55,7 +104,7 @@ function renderAbout(data) {
     
     if (aboutSkills) {
         aboutSkills.innerHTML = data.about.skills.map(skill => 
-            `<span class="bg-primary text-white px-4 py-2 rounded-lg text-sm shadow-md hover:shadow-lg transition-shadow">${skill}</span>`
+            `<span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-sm">${skill}</span>`
         ).join('');
     }
     
