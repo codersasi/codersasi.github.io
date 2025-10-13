@@ -203,6 +203,60 @@
   "projectsConfig": {
     "mediumUsername": "sasidharc"
   },
+  "achievements": [
+    {
+      "icon": "fas fa-rocket",
+      "number": "10M+",
+      "title": "Users Served",
+      "description": "Built and scaled systems serving over 10 million active users with 99.9% uptime"
+    },
+    {
+      "icon": "fas fa-chart-line",
+      "number": "40%",
+      "title": "Cost Reduction",
+      "description": "Optimized cloud infrastructure and data pipelines, reducing operational costs by 40%"
+    },
+    {
+      "icon": "fas fa-clock",
+      "number": "60%",
+      "title": "Performance Boost",
+      "description": "Improved system performance by 60% through architectural improvements and optimization"
+    },
+    {
+      "icon": "fas fa-users",
+      "number": "50+",
+      "title": "Teams Led",
+      "description": "Mentored and led cross-functional engineering teams across multiple organizations"
+    }
+  ],
+  "caseStudies": [
+    {
+      "title": "AI-Powered Data Analytics Platform",
+      "client": "Enterprise SaaS Company",
+      "challenge": "Company needed to enable non-technical users to query complex datasets using natural language, replacing traditional SQL-based reporting.",
+      "solution": "Architected and built an Agentic AI platform with RAG (Retrieval-Augmented Generation) architecture. Implemented semantic search, query optimization, and real-time data visualization. Created flexible plugin system for enterprise data source integration.",
+      "impact": [
+        "Reduced query time from hours to seconds",
+        "Enabled 500+ business users to access data insights independently",
+        "Decreased support tickets by 70% through intuitive AI interface"
+      ],
+      "technologies": ["Python", "LLM", "RAG", "FastAPI", "PostgreSQL"],
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop"
+    },
+    {
+      "title": "Kubernetes-Based Microservices Migration",
+      "client": "Data Platform Company",
+      "challenge": "Legacy monolithic application was facing scalability issues, with deployment taking 4+ hours and frequent downtime during updates.",
+      "solution": "Led complete architectural transformation to Kubernetes-based microservices. Designed service mesh architecture, implemented CI/CD pipelines, and built custom Spark compute for ETL jobs. Created auto-scaling infrastructure handling variable workloads.",
+      "impact": [
+        "Reduced deployment time from 4 hours to 15 minutes",
+        "Achieved 99.9% uptime with zero-downtime deployments",
+        "Scaled system to handle 3x traffic with same infrastructure cost"
+      ],
+      "technologies": ["Kubernetes", "Docker", "Spark", "Istio", "GitLab CI/CD"],
+      "image": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&h=500&fit=crop"
+    }
+  ],
   "footer": {
     "copyright": "© 2025 Sasidhar Chintapalli. All rights reserved."
   }

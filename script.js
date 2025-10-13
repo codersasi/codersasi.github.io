@@ -51,7 +51,7 @@ function renderAbout(data) {
         <div class="container mx-auto px-6">
             <h3 class="text-4xl font-bold mb-12 text-gray-900">About Me</h3>
             <div class="bg-white rounded-xl shadow-xl p-8">
-                <div class="flex items-center gap-6 mb-8">
+                <div class="flex items-center gap-10 mb-8">
                     <img src="${data.personal.profileImage}" alt="${data.personal.name}" class="rounded-full w-32 h-32 border-4 border-secondary shadow-lg flex-shrink-0">
                     <div>
                         <h4 class="text-3xl font-bold mb-2">${data.personal.name}</h4>
@@ -64,9 +64,9 @@ function renderAbout(data) {
                 
                 <div class="mb-6">
                     <h5 class="text-xl font-bold mb-3">Technical Expertise</h5>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-3">
                         ${data.about.skills.map(skill => 
-                            `<span class="bg-primary/20 text-primary px-4 py-2 rounded-lg text-sm font-medium">${skill}</span>`
+                            `<span class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-shadow">${skill}</span>`
                         ).join('')}
                     </div>
                 </div>
@@ -161,6 +161,82 @@ function renderEducation(data) {
 }
 
 // Render certifications section
+// Render achievements
+function renderAchievements(data) {
+    const achievementsSection = document.getElementById('achievements');
+    if (!achievementsSection || !data || !data.achievements) return;
+    
+    const achievementsHTML = `
+        <div class="container mx-auto px-6">
+            <h3 class="text-4xl font-bold text-center mb-12 text-gray-900">Key Achievements & Impact</h3>
+            <div class="grid md:grid-cols-4 gap-6">
+                ${data.achievements.map(achievement => `
+                    <div class="bg-white rounded-xl shadow-xl p-6 text-center hover:shadow-2xl transition-shadow">
+                        <i class="${achievement.icon} text-5xl text-secondary mb-4"></i>
+                        <h4 class="text-4xl font-bold text-primary mb-2">${achievement.number}</h4>
+                        <h5 class="text-xl font-bold mb-3">${achievement.title}</h5>
+                        <p class="text-gray-600">${achievement.description}</p>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    
+    achievementsSection.innerHTML = achievementsHTML;
+}
+
+// Render case studies
+function renderCaseStudies(data) {
+    const caseStudiesSection = document.getElementById('case-studies');
+    if (!caseStudiesSection || !data || !data.caseStudies) return;
+    
+    const caseStudiesHTML = `
+        <div class="container mx-auto px-6">
+            <h3 class="text-4xl font-bold text-center mb-12 text-gray-900">Case Studies</h3>
+            <div class="space-y-12">
+                ${data.caseStudies.map((study, index) => `
+                    <div class="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow">
+                        <div class="grid md:grid-cols-2 gap-0">
+                            <div class="${index % 2 === 0 ? 'order-1' : 'order-2'}">
+                                <img src="${study.image}" alt="${study.title}" class="w-full h-full object-cover" loading="lazy">
+                            </div>
+                            <div class="${index % 2 === 0 ? 'order-2' : 'order-1'} p-8">
+                                <h4 class="text-2xl font-bold mb-2">${study.title}</h4>
+                                <p class="text-secondary mb-4">${study.client}</p>
+                                
+                                <div class="mb-4">
+                                    <h5 class="font-bold text-lg mb-2">Challenge</h5>
+                                    <p class="text-gray-700">${study.challenge}</p>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h5 class="font-bold text-lg mb-2">Solution</h5>
+                                    <p class="text-gray-700">${study.solution}</p>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h5 class="font-bold text-lg mb-2">Impact</h5>
+                                    <ul class="list-disc list-inside space-y-1">
+                                        ${study.impact.map(item => `<li class="text-gray-700">${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2">
+                                    ${study.technologies.map(tech => 
+                                        `<span class="bg-primary text-white px-3 py-1 rounded-lg text-xs font-medium shadow-md">${tech}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    
+    caseStudiesSection.innerHTML = caseStudiesHTML;
+}
+
 function renderCertifications(data) {
     const certsContainer = document.querySelector('#certifications .grid');
     if (!certsContainer || !data) return;
@@ -322,7 +398,9 @@ async function initPortfolio() {
     // Render all sections that exist on current page
     renderHero(portfolioData);
     renderAbout(portfolioData);
+    renderAchievements(portfolioData);
     renderProjects(portfolioData);
+    renderCaseStudies(portfolioData);
     renderExperience(portfolioData);
     renderEducation(portfolioData);
     renderCertifications(portfolioData);
