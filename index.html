@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sasidhar Chintapalli | SC</title>
-    <meta name="description" content="Sasidhar Chintapalli - Software Engineer, AI Builder. Projects, blog, and more.">
+    <meta name="description" content="Sasidhar Chintapalli - Problems I've solved building data platforms and AI-powered applications.">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2d6a8f;
@@ -19,13 +19,17 @@
             --gray-700: #374151;
             --gray-500: #6b7280;
             --gray-400: #9ca3af;
+            --gray-300: #d1d5db;
             --gray-200: #e5e7eb;
             --gray-100: #f3f4f6;
             --gray-50: #f9fafb;
             --white: #ffffff;
             --accent-bg: #eef6fb;
+            --accent-warm: #fef7ed;
+            --accent-green: #ecfdf5;
             --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+            --font-hand: 'Caveat', cursive;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -98,10 +102,6 @@
             padding: 160px 24px 100px;
             max-width: 1100px;
             margin: 0 auto;
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
         .hero-label {
             display: inline-block;
@@ -119,12 +119,19 @@
             line-height: 1.1;
             letter-spacing: -2px;
             margin-bottom: 24px;
+            max-width: 900px;
         }
-        .hero h1 span { color: var(--primary); }
+        .hero h1 span {
+            color: var(--primary);
+            font-family: var(--font-hand);
+            font-weight: 600;
+            font-size: 1.15em;
+            letter-spacing: 0;
+        }
         .hero-subtitle {
             font-size: 1.2rem;
             color: var(--gray-500);
-            max-width: 600px;
+            max-width: 680px;
             line-height: 1.8;
             margin-bottom: 40px;
         }
@@ -144,10 +151,7 @@
             text-decoration: none;
             transition: all 0.2s;
         }
-        .btn-primary {
-            background: var(--primary);
-            color: var(--white);
-        }
+        .btn-primary { background: var(--primary); color: var(--white); }
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-1px);
@@ -189,80 +193,187 @@
             font-weight: 700;
             color: var(--dark);
             letter-spacing: -0.8px;
-            margin-bottom: 48px;
+            margin-bottom: 12px;
+        }
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--gray-500);
+            margin-bottom: 56px;
+            max-width: 640px;
         }
         .section-alt { background: var(--gray-50); }
 
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-        .project-card {
-            padding: 32px;
+        /* Case Study */
+        .case-study {
             background: var(--white);
             border: 1px solid var(--gray-200);
-            border-radius: 14px;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: inherit;
+            border-radius: 18px;
+            padding: 48px;
+            margin-bottom: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        .case-study::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--primary);
+        }
+        .case-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .case-number {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--gray-400);
+            letter-spacing: 2px;
+        }
+        .case-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+        .badge-current {
+            background: var(--accent-green);
+            color: #047857;
+        }
+        .badge-recent {
+            background: var(--accent-bg);
+            color: var(--primary);
+        }
+        .badge-past {
+            background: var(--accent-warm);
+            color: #c2410c;
+        }
+        .case-study h3 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: -0.6px;
+            line-height: 1.25;
+            margin: 12px 0 8px;
+        }
+        .case-tagline {
+            font-size: 1.02rem;
+            color: var(--gray-500);
+            font-style: italic;
+            margin-bottom: 36px;
+        }
+
+        /* Diagram */
+        .diagram-wrap {
+            background: var(--accent-bg);
+            border: 1.5px dashed var(--primary);
+            border-radius: 12px;
+            padding: 28px 20px;
+            margin-bottom: 44px;
+            overflow-x: auto;
+        }
+        .diagram-wrap svg {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+        .diagram-caption {
+            font-family: var(--font-hand);
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        /* Detail blocks */
+        .case-details {
+            display: grid;
+            gap: 28px;
+        }
+        .detail-block {
+            padding-left: 22px;
+            border-left: 2px solid var(--gray-200);
+        }
+        .detail-block h4 {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .detail-block p {
+            font-size: 0.96rem;
+            color: var(--gray-700);
+            line-height: 1.75;
+        }
+        .detail-block.retro {
+            border-left-color: var(--primary);
+            background: var(--accent-bg);
+            padding: 18px 22px;
+            border-radius: 0 10px 10px 0;
+        }
+        .detail-block.retro h4 { color: var(--primary-dark); }
+
+        .metric-row {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--gray-300);
+        }
+        .metric {
             display: flex;
             flex-direction: column;
         }
-        .project-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 8px 30px rgba(45,106,143,0.1);
-            transform: translateY(-3px);
-        }
-        .project-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .project-icon {
-            width: 44px; height: 44px;
-            background: var(--accent-bg);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .project-arrow {
-            color: var(--gray-400);
-            transition: all 0.3s;
-        }
-        .project-card:hover .project-arrow {
-            color: var(--primary);
-            transform: translate(3px, -3px);
-        }
-        .project-card h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
             color: var(--dark);
-            margin-bottom: 8px;
+            font-family: var(--font-mono);
+            letter-spacing: -0.5px;
         }
-        .project-card p {
-            font-size: 0.9rem;
+        .metric-label {
+            font-size: 0.78rem;
             color: var(--gray-500);
-            line-height: 1.7;
-            flex: 1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
         }
-        .project-tags {
+        .metric-note {
+            font-family: var(--font-hand);
+            font-size: 1.15rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .case-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 18px;
+            gap: 8px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--gray-200);
         }
-        .project-tag {
+        .case-tag {
             font-size: 0.72rem;
             font-weight: 500;
-            padding: 4px 12px;
-            background: var(--accent-bg);
-            color: var(--primary);
+            padding: 5px 12px;
+            background: var(--gray-100);
+            color: var(--gray-700);
             border-radius: 20px;
-            letter-spacing: 0.2px;
+            font-family: var(--font-mono);
         }
 
         /* Blog Grid */
@@ -385,12 +496,15 @@
                 box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             }
             .hamburger { display: block; }
-            .hero { padding: 120px 24px 60px; min-height: auto; }
+            .hero { padding: 120px 24px 60px; }
             .hero h1 { font-size: 2.2rem; letter-spacing: -1px; }
             section { padding: 60px 24px; }
-            .projects-grid, .blog-grid { grid-template-columns: 1fr; }
+            .case-study { padding: 32px 24px; }
+            .case-study h3 { font-size: 1.35rem; }
+            .blog-grid { grid-template-columns: 1fr; }
             .footer-inner { flex-direction: column; text-align: center; }
             .footer-left { flex-direction: column; gap: 12px; }
+            .metric-row { gap: 20px; }
         }
 
         /* Animations */
@@ -403,6 +517,18 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Diagram SVG common */
+        .diag-box { fill: var(--white); stroke: var(--primary); stroke-width: 2; }
+        .diag-box-fill { fill: var(--accent-bg); stroke: var(--primary); stroke-width: 2; }
+        .diag-box-dark { fill: var(--primary); stroke: var(--primary-dark); stroke-width: 2; }
+        .diag-label { font-family: var(--font-hand); font-size: 22px; fill: var(--dark); font-weight: 600; }
+        .diag-label-white { font-family: var(--font-hand); font-size: 22px; fill: var(--white); font-weight: 600; }
+        .diag-small { font-family: var(--font-mono); font-size: 11px; fill: var(--gray-500); }
+        .diag-small-light { font-family: var(--font-mono); font-size: 11px; fill: rgba(255,255,255,0.85); }
+        .diag-arrow { stroke: var(--primary); stroke-width: 2; fill: none; }
+        .diag-arrow-dashed { stroke: var(--primary); stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
+        .diag-note { font-family: var(--font-hand); font-size: 18px; fill: var(--primary); }
     </style>
 </head>
 <body>
@@ -412,9 +538,8 @@
     <div class="nav-inner">
         <a href="#" class="nav-brand">S<span>C</span></a>
         <ul class="nav-links" id="navLinks">
-            <li><a href="#projects">Projects</a></li>
+            <li><a href="#work">Work</a></li>
             <li><a href="#blog">Blog</a></li>
-            <li><a href="advisory.html">Advisory</a></li>
             <li><a href="Sasidhar_Chintapalli_Resume.docx" target="_blank">Resume</a></li>
             <li><a href="https://www.linkedin.com/in/sasich" target="_blank">LinkedIn</a></li>
         </ul>
@@ -426,16 +551,17 @@
 
 <!-- Hero -->
 <section class="hero">
-    <div class="hero-label">Software Engineering & AI</div>
-    <h1>Building things<br>with <span>data & AI</span></h1>
+    <div class="hero-label">Sasidhar Chintapalli</div>
+    <h1>I build systems that solve <span>messy</span> data problems.</h1>
     <p class="hero-subtitle">
-        I'm Sasidhar Chintapalli. I build distributed data platforms, AI-powered applications,
-        and open-source tools. This is where I share my projects and writing.
+        Seventeen years of designing distributed data platforms, AI-powered applications, and the
+        unglamorous plumbing in between. This site isn't a résumé &mdash; it's a set of problems
+        I picked up, how I thought about them, and what I'd do differently now.
     </p>
     <div class="hero-links">
-        <a href="#projects" class="btn btn-primary">
+        <a href="#work" class="btn btn-primary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            View Projects
+            See Case Studies
         </a>
         <a href="#blog" class="btn btn-outline">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -448,62 +574,453 @@
     </div>
 </section>
 
-<!-- Projects -->
-<section class="section-alt" id="projects">
+<!-- Work / Case Studies -->
+<section class="section-alt" id="work">
     <div class="section-inner">
-        <div class="section-label">Open Source & Work</div>
-        <h2 class="section-title">Projects</h2>
-        <div class="projects-grid">
+        <div class="section-label">Problems I've Solved</div>
+        <h2 class="section-title">Case Studies</h2>
+        <p class="section-subtitle">
+            Three problems, framed the way I actually think about them: what was broken, what I tried,
+            what shipped, and what I'd do differently if I started again tomorrow.
+        </p>
 
-            <a href="https://github.com/codersasi/pocketsDB" target="_blank" class="project-card fade-in">
-                <div class="project-header">
-                    <div class="project-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2d6a8f" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        <!-- CASE STUDY 01: Relationship Discovery -->
+        <div class="case-study fade-in">
+            <div class="case-header">
+                <span class="case-number">CASE 01</span>
+                <span class="case-badge badge-current">Current</span>
+            </div>
+            <h3>An AI agent that discovers relationships across messy enterprise schemas</h3>
+            <p class="case-tagline">Because context is what makes LLMs useful on your data &mdash; and context lives in the joins.</p>
+
+            <div class="diagram-wrap">
+                <svg viewBox="0 0 780 420" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arr1" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                            <polygon points="0 0, 10 5, 0 10" fill="#2d6a8f"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Schema tables -->
+                    <rect class="diag-box" x="30" y="20" width="180" height="92" rx="10"/>
+                    <text class="diag-label" x="120" y="48" text-anchor="middle">customers</text>
+                    <line x1="50" y1="58" x2="190" y2="58" stroke="#d1d5db" stroke-width="1"/>
+                    <text class="diag-small" x="120" y="76" text-anchor="middle">id, name, email</text>
+                    <text class="diag-small" x="120" y="93" text-anchor="middle">region, tier, signup_dt</text>
+
+                    <rect class="diag-box" x="300" y="20" width="180" height="92" rx="10"/>
+                    <text class="diag-label" x="390" y="48" text-anchor="middle">orders</text>
+                    <line x1="320" y1="58" x2="460" y2="58" stroke="#d1d5db" stroke-width="1"/>
+                    <text class="diag-small" x="390" y="76" text-anchor="middle">id, cust_ref</text>
+                    <text class="diag-small" x="390" y="93" text-anchor="middle">amount, order_date</text>
+
+                    <rect class="diag-box" x="570" y="20" width="180" height="92" rx="10"/>
+                    <text class="diag-label" x="660" y="48" text-anchor="middle">products</text>
+                    <line x1="590" y1="58" x2="730" y2="58" stroke="#d1d5db" stroke-width="1"/>
+                    <text class="diag-small" x="660" y="76" text-anchor="middle">sku, name, price</text>
+                    <text class="diag-small" x="660" y="93" text-anchor="middle">category, vendor</text>
+
+                    <!-- Hand-drawn arrows from tables to agent -->
+                    <path class="diag-arrow" d="M 120 112 C 120 160, 240 180, 300 215" marker-end="url(#arr1)"/>
+                    <path class="diag-arrow" d="M 390 112 L 390 200" marker-end="url(#arr1)"/>
+                    <path class="diag-arrow" d="M 660 112 C 660 160, 540 180, 480 215" marker-end="url(#arr1)"/>
+
+                    <!-- Agent box -->
+                    <rect class="diag-box-dark" x="260" y="200" width="260" height="90" rx="12"/>
+                    <text class="diag-label-white" x="390" y="232" text-anchor="middle">LangGraph Agent</text>
+                    <text class="diag-small-light" x="390" y="255" text-anchor="middle">schema walker • FK inference</text>
+                    <text class="diag-small-light" x="390" y="272" text-anchor="middle">semantic edge proposer</text>
+
+                    <!-- Annotation -->
+                    <text class="diag-note" x="545" y="245">walks metadata</text>
+                    <path class="diag-arrow-dashed" d="M 540 240 Q 535 232 525 232"/>
+
+                    <!-- Output: relationship graph -->
+                    <path class="diag-arrow" d="M 390 290 L 390 330" marker-end="url(#arr1)"/>
+
+                    <rect class="diag-box-fill" x="140" y="330" width="500" height="78" rx="10"/>
+                    <text class="diag-label" x="390" y="358" text-anchor="middle">Knowledge Graph of Relationships</text>
+                    <text class="diag-small" x="390" y="380" text-anchor="middle">customers → orders (cust_ref = id)  •  orders → products (sku)</text>
+                    <text class="diag-small" x="390" y="397" text-anchor="middle">used downstream for context assembly &amp; GraphRAG retrieval</text>
+                </svg>
+                <div class="diagram-caption">agent reads the schema, returns the graph you wish someone had documented</div>
+            </div>
+
+            <div class="case-details">
+                <div class="detail-block">
+                    <h4>The Problem</h4>
+                    <p>
+                        Enterprise data is scattered across dozens of schemas with inconsistent naming, missing foreign keys,
+                        and tribal knowledge living in the heads of people who left the company two reorgs ago. To answer
+                        any non-trivial question with an LLM, you first need to know which tables belong together and
+                        <em>how</em> &mdash; otherwise you're stuffing irrelevant context into a prompt and praying. Manually
+                        mapping this is brittle, doesn't scale, and rots the moment a schema changes.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Approach</h4>
+                    <p>
+                        I considered three options. <strong>One</strong>: one-shot the whole catalog into a frontier LLM and
+                        ask it for relationships &mdash; rejected because token limits die at real-world scale and the model
+                        hallucinates joins that don't exist. <strong>Two</strong>: pure vector similarity over column names and
+                        sample values &mdash; rejected because semantic similarity ≠ an actual join key, and precision suffers.
+                        <strong>Three</strong>: an agentic walker that combines metadata signals (column names, types,
+                        cardinality, sample overlap) with LLM reasoning on narrow, bounded slices &mdash; this is what I picked.
+                        It lets the model make scoped inferences without drowning in context.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Solution</h4>
+                    <p>
+                        A LangGraph-based agent orchestration with specialized nodes: a schema walker that crawls the
+                        metadata catalog, a candidate proposer that flags potential joins using heuristics plus LLM scoring,
+                        a validator that checks sample overlap before committing, and a graph writer that emits edges into a
+                        knowledge graph. The output feeds a GraphRAG retrieval layer that downstream agents use for context
+                        assembly when answering questions on enterprise data.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Outcome</h4>
+                    <p>
+                        Currently in active development as part of the AI-Native Data Layer I'm building at Uniphore. Early
+                        results on internal benchmarks show the discovered graph meaningfully improves retrieval precision
+                        over naive semantic search, but I want to be honest: it's too early for production numbers I'd stand
+                        behind publicly. I'll update this section when there's something real to report.
+                    </p>
+                    <div class="metric-row">
+                        <div class="metric">
+                            <span class="metric-value">4</span>
+                            <span class="metric-label">Agent types</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">5</span>
+                            <span class="metric-label">Platform layers</span>
+                        </div>
+                        <div class="metric" style="justify-content: center;">
+                            <span class="metric-note">&ldquo;production numbers coming&rdquo;</span>
+                        </div>
                     </div>
-                    <svg class="project-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
                 </div>
-                <h3>pocketsDB</h3>
-                <p>A file-based database engine built in Python with SQL parsing. Demonstrates building a database from scratch with grammar parsing, SQL execution, and file-backed storage.</p>
-                <div class="project-tags">
-                    <span class="project-tag">Python</span>
-                    <span class="project-tag">SQL</span>
-                    <span class="project-tag">Database</span>
-                    <span class="project-tag">Parser</span>
-                </div>
-            </a>
 
-            <a href="https://github.com/codersasi/simple_datagen" target="_blank" class="project-card fade-in">
-                <div class="project-header">
-                    <div class="project-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2d6a8f" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                    </div>
-                    <svg class="project-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                <div class="detail-block retro">
+                    <h4>What I'd Do Differently</h4>
+                    <p>
+                        Start with an evaluation harness <em>before</em> building the agent. I spent real time tuning
+                        heuristics without a rigorous way to measure regressions, and that always comes back to bite you.
+                        I'd also keep the first version simpler: a deterministic walker with LLM scoring only at the edges,
+                        rather than full agentic orchestration. Agents are fun but they obscure failure modes that a
+                        boring pipeline would surface immediately.
+                    </p>
                 </div>
-                <h3>simple_datagen</h3>
-                <p>A lightweight Python utility for generating synthetic test datasets. Useful for testing data pipelines, populating dev environments, and benchmarking data systems.</p>
-                <div class="project-tags">
-                    <span class="project-tag">Python</span>
-                    <span class="project-tag">Data Generation</span>
-                    <span class="project-tag">Testing</span>
-                </div>
-            </a>
+            </div>
 
-            <a href="https://github.com/codersasi" target="_blank" class="project-card fade-in">
-                <div class="project-header">
-                    <div class="project-icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2d6a8f" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                    </div>
-                    <svg class="project-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-                </div>
-                <h3>More on GitHub</h3>
-                <p>Browse all my open-source repositories, experiments, and side projects on GitHub.</p>
-                <div class="project-tags">
-                    <span class="project-tag">GitHub</span>
-                    <span class="project-tag">Open Source</span>
-                </div>
-            </a>
-
+            <div class="case-tags">
+                <span class="case-tag">LangGraph</span>
+                <span class="case-tag">GraphRAG</span>
+                <span class="case-tag">Agentic AI</span>
+                <span class="case-tag">Knowledge Graph</span>
+                <span class="case-tag">Schema Inference</span>
+                <span class="case-tag">LLMs</span>
+            </div>
         </div>
+
+        <!-- CASE STUDY 02: Workload Migration -->
+        <div class="case-study fade-in">
+            <div class="case-header">
+                <span class="case-number">CASE 02</span>
+                <span class="case-badge badge-recent">Recent Past</span>
+            </div>
+            <h3>Automating migration of thousands of legacy ETL workloads to cloud warehouses</h3>
+            <p class="case-tagline">The enterprise equivalent of translating a library from one dead language to three living ones.</p>
+
+            <div class="diagram-wrap">
+                <svg viewBox="0 0 820 340" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arr2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                            <polygon points="0 0, 10 5, 0 10" fill="#2d6a8f"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Sources (left stack) -->
+                    <text class="diag-note" x="90" y="30" text-anchor="middle">legacy sources</text>
+                    <rect class="diag-box" x="25" y="50" width="130" height="52" rx="8"/>
+                    <text class="diag-label" x="90" y="82" text-anchor="middle">Informatica</text>
+
+                    <rect class="diag-box" x="25" y="118" width="130" height="52" rx="8"/>
+                    <text class="diag-label" x="90" y="150" text-anchor="middle">Legacy SQL</text>
+
+                    <rect class="diag-box" x="25" y="186" width="130" height="52" rx="8"/>
+                    <text class="diag-label" x="90" y="218" text-anchor="middle">Hive / Oozie</text>
+
+                    <!-- Arrows into reader -->
+                    <path class="diag-arrow" d="M 155 76 L 215 140" marker-end="url(#arr2)"/>
+                    <path class="diag-arrow" d="M 155 144 L 215 148" marker-end="url(#arr2)"/>
+                    <path class="diag-arrow" d="M 155 212 L 215 158" marker-end="url(#arr2)"/>
+
+                    <!-- ANTLR4 Reader -->
+                    <rect class="diag-box-fill" x="215" y="115" width="160" height="68" rx="10"/>
+                    <text class="diag-label" x="295" y="144" text-anchor="middle">ANTLR4 Reader</text>
+                    <text class="diag-small" x="295" y="165" text-anchor="middle">grammar → AST</text>
+
+                    <path class="diag-arrow" d="M 375 149 L 420 149" marker-end="url(#arr2)"/>
+
+                    <!-- Middleware JSON (the hub) -->
+                    <rect class="diag-box-dark" x="420" y="100" width="180" height="98" rx="12"/>
+                    <text class="diag-label-white" x="510" y="134" text-anchor="middle">Middleware</text>
+                    <text class="diag-label-white" x="510" y="160" text-anchor="middle">JSON IR</text>
+                    <text class="diag-small-light" x="510" y="182" text-anchor="middle">portable • versioned</text>
+
+                    <text class="diag-note" x="510" y="80" text-anchor="middle">hub-and-spoke IR</text>
+                    <path class="diag-arrow-dashed" d="M 510 85 L 510 100"/>
+
+                    <path class="diag-arrow" d="M 600 149 L 645 149" marker-end="url(#arr2)"/>
+
+                    <!-- Writers (right stack) -->
+                    <rect class="diag-box-fill" x="645" y="115" width="150" height="68" rx="10"/>
+                    <text class="diag-label" x="720" y="144" text-anchor="middle">Writers</text>
+                    <text class="diag-small" x="720" y="165" text-anchor="middle">target-specific</text>
+
+                    <!-- Targets -->
+                    <text class="diag-note" x="720" y="215" text-anchor="middle">targets</text>
+                    <rect class="diag-box" x="640" y="230" width="160" height="42" rx="8"/>
+                    <text class="diag-label" x="720" y="258" text-anchor="middle">Snowflake</text>
+
+                    <rect class="diag-box" x="640" y="282" width="160" height="42" rx="8"/>
+                    <text class="diag-label" x="720" y="310" text-anchor="middle">Databricks SQL</text>
+
+                    <path class="diag-arrow" d="M 720 183 L 720 230" marker-end="url(#arr2)"/>
+                </svg>
+                <div class="diagram-caption">one reader per legacy system, one writer per target &mdash; the JSON in the middle is the whole trick</div>
+            </div>
+
+            <div class="case-details">
+                <div class="detail-block">
+                    <h4>The Problem</h4>
+                    <p>
+                        A Fortune 500 client had years of business logic locked in Informatica mappings, legacy SQL jobs, and
+                        an older on-prem data platform. They needed it all on Snowflake and Databricks SQL &mdash; not in
+                        five years, but on a realistic migration timeline. Hand-rewriting thousands of pipelines was
+                        economically impossible and guaranteed to drop edge cases. The real constraint wasn't just
+                        automation &mdash; it was building something that could target <em>multiple</em> cloud warehouses
+                        without writing N×M translators.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Approach</h4>
+                    <p>
+                        Obvious option: point-to-point translators (Informatica→Snowflake, Informatica→Databricks,
+                        Hive→Snowflake…). Rejected &mdash; that's the classic N×M trap where every new source or target
+                        multiplies the work. I designed a <strong>hub-and-spoke</strong> architecture with a middleware JSON
+                        intermediate representation. Readers parse the source into the IR using ANTLR4 grammars; writers
+                        emit target-specific SQL/config from the same IR. Adding a new source or target becomes O(1) instead
+                        of O(N×M).
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Solution</h4>
+                    <p>
+                        ANTLR4-based parsers for each legacy source, producing an AST walked by a reader into a
+                        versioned middleware JSON schema. The IR captured not just SQL but transformation semantics,
+                        lineage, scheduling metadata, and parameterization. Writers for each target consumed the IR and
+                        emitted native SQL plus orchestration config. A validation layer diffed source vs. translated
+                        outputs on sample data to catch semantic drift before customers ran anything in production.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Outcome</h4>
+                    <p>
+                        The framework onboarded Fortune 500 clients running thousands of pipelines per day on the new
+                        cloud targets, with the same architecture supporting Snowflake, Databricks, BigQuery, and EMR
+                        without separate codebases.
+                    </p>
+                    <div class="metric-row">
+                        <div class="metric">
+                            <span class="metric-value">1000s</span>
+                            <span class="metric-label">Pipelines translated</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">4</span>
+                            <span class="metric-label">Target platforms</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">N+M</span>
+                            <span class="metric-label">Instead of N×M</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-block retro">
+                    <h4>What I'd Do Differently</h4>
+                    <p>
+                        I'd invest earlier in a differential testing harness that auto-generates fixtures from source
+                        pipelines and validates writer output on real data samples. We built this eventually, but running
+                        without it in the early phases meant discovering semantic mismatches much later than we should have.
+                        I'd also version the middleware IR more aggressively from day one &mdash; schema evolution on the hub
+                        is painful when you've got downstream writers depending on older shapes.
+                    </p>
+                </div>
+            </div>
+
+            <div class="case-tags">
+                <span class="case-tag">ANTLR4</span>
+                <span class="case-tag">Grammar Parsing</span>
+                <span class="case-tag">Snowflake</span>
+                <span class="case-tag">Databricks</span>
+                <span class="case-tag">IR Design</span>
+                <span class="case-tag">ETL Migration</span>
+            </div>
+        </div>
+
+        <!-- CASE STUDY 03: Kooklive -->
+        <div class="case-study fade-in">
+            <div class="case-header">
+                <span class="case-number">CASE 03</span>
+                <span class="case-badge badge-past">Side Project</span>
+            </div>
+            <h3>Kooklive: a live-streaming platform for home cooks teaching classes during the pandemic</h3>
+            <p class="case-tagline">Built nights and weekends when half the world was suddenly learning to cook.</p>
+
+            <div class="diagram-wrap">
+                <svg viewBox="0 0 780 380" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arr3" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                            <polygon points="0 0, 10 5, 0 10" fill="#2d6a8f"/>
+                        </marker>
+                    </defs>
+
+                    <!-- GCP outer container -->
+                    <rect x="40" y="50" width="700" height="300" rx="14" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 5"/>
+                    <text class="diag-note" x="60" y="75" fill="#6b7280">hosted on Google Cloud</text>
+
+                    <!-- Android App (top left, outside the cloud box area but within diagram) -->
+                    <rect class="diag-box" x="70" y="140" width="160" height="92" rx="10"/>
+                    <text class="diag-label" x="150" y="172" text-anchor="middle">Android App</text>
+                    <text class="diag-small" x="150" y="192" text-anchor="middle">learners + cooks</text>
+                    <text class="diag-small" x="150" y="208" text-anchor="middle">discover • join • chat</text>
+
+                    <!-- Backend (center) -->
+                    <rect class="diag-box-dark" x="290" y="130" width="190" height="112" rx="12"/>
+                    <text class="diag-label-white" x="385" y="162" text-anchor="middle">Node + Express</text>
+                    <text class="diag-label-white" x="385" y="186" text-anchor="middle">+ Python workers</text>
+                    <text class="diag-small-light" x="385" y="210" text-anchor="middle">auth • sessions</text>
+                    <text class="diag-small-light" x="385" y="226" text-anchor="middle">payments • scheduling</text>
+
+                    <!-- MongoDB (below backend) -->
+                    <rect class="diag-box-fill" x="290" y="270" width="190" height="56" rx="10"/>
+                    <text class="diag-label" x="385" y="302" text-anchor="middle">MongoDB</text>
+
+                    <!-- Zoom SDK (top right) -->
+                    <rect class="diag-box" x="540" y="100" width="170" height="62" rx="10"/>
+                    <text class="diag-label" x="625" y="130" text-anchor="middle">Zoom SDK</text>
+                    <text class="diag-small" x="625" y="150" text-anchor="middle">live video sessions</text>
+
+                    <!-- Firebase (mid right) -->
+                    <rect class="diag-box" x="540" y="180" width="170" height="62" rx="10"/>
+                    <text class="diag-label" x="625" y="210" text-anchor="middle">Firebase</text>
+                    <text class="diag-small" x="625" y="230" text-anchor="middle">realtime chat</text>
+
+                    <!-- Arrows -->
+                    <path class="diag-arrow" d="M 230 186 L 290 186" marker-end="url(#arr3)"/>
+                    <path class="diag-arrow" d="M 385 242 L 385 270" marker-end="url(#arr3)"/>
+                    <path class="diag-arrow-dashed" d="M 480 160 C 510 140, 520 130, 540 130" marker-end="url(#arr3)"/>
+                    <path class="diag-arrow-dashed" d="M 480 200 L 540 210" marker-end="url(#arr3)"/>
+
+                    <!-- Direct client-to-zoom (because video is P2P via Zoom SDK) -->
+                    <path class="diag-arrow-dashed" d="M 150 140 C 200 60, 450 50, 600 100" marker-end="url(#arr3)"/>
+                    <text class="diag-note" x="380" y="62">direct client → Zoom (video)</text>
+                </svg>
+                <div class="diagram-caption">classic client/server, but video and chat handed off to managed services &mdash; so I could sleep</div>
+            </div>
+
+            <div class="case-details">
+                <div class="detail-block">
+                    <h4>The Problem</h4>
+                    <p>
+                        Pandemic lockdowns meant millions of people suddenly wanted to cook at home, and a lot of talented
+                        home cooks had time on their hands and something to teach. YouTube recipes aren't classes &mdash;
+                        there's no interaction, no scheduling, no way for a social cook to run a paid class with their own
+                        students. I wanted to build a dedicated platform where home cooks could monetize live cooking
+                        lessons. The constraint: it had to ship fast (the window was open <em>now</em>) and I was building
+                        it nights and weekends.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Approach</h4>
+                    <p>
+                        The tempting path was to build a WebRTC video stack from scratch. Rejected immediately &mdash; that's
+                        a full-time job for a team, not a side project. Same with building a real-time chat layer on raw
+                        WebSockets. The right move for a time-constrained MVP was to pick best-in-class managed services
+                        for the hard parts and focus my time on the domain-specific logic: class discovery, scheduling,
+                        host onboarding, and the mobile experience. I chose Zoom SDK for video and Firebase for chat
+                        because both were battle-tested and I could integrate them in days, not months.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Solution</h4>
+                    <p>
+                        Node.js + Express backend on Google Cloud with MongoDB for the application data, Python workers for
+                        background jobs like notifications and scheduling, an Android app as the primary client, Zoom SDK
+                        embedded for live class sessions, and Firebase for real-time chat during classes. Auth and session
+                        handling in the backend, but the heavy lifting (video frames, chat fan-out) stayed with the managed
+                        services.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Outcome</h4>
+                    <p>
+                        Kooklive shipped as a working MVP with real cooks running live classes. It was a side project
+                        rather than a funded startup, so I won't pretend we hit massive scale &mdash; the honest version is
+                        that it proved the product hypothesis end-to-end, gave me a ton of validated learning about managed
+                        service composition, and became a nice demo of what one person can ship on evenings and weekends
+                        when the primitives are chosen well.
+                    </p>
+                    <div class="metric-row">
+                        <div class="metric">
+                            <span class="metric-value">1</span>
+                            <span class="metric-label">Engineer (me)</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">MVP</span>
+                            <span class="metric-label">Shipped end-to-end</span>
+                        </div>
+                        <div class="metric" style="justify-content: center;">
+                            <span class="metric-note">&ldquo;honest: side project scale&rdquo;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-block retro">
+                    <h4>What I'd Do Differently</h4>
+                    <p>
+                        I'd start on the web instead of Android-first. Mobile felt right for learners but Android-only cut
+                        my addressable audience in half and an iOS build from a solo dev was never going to happen. A
+                        responsive web client would have given me both platforms for the price of one. I'd also validate
+                        the monetization loop before building scheduling &mdash; I built the features I thought a class
+                        platform needed, rather than the features that proved people would actually pay.
+                    </p>
+                </div>
+            </div>
+
+            <div class="case-tags">
+                <span class="case-tag">Node.js</span>
+                <span class="case-tag">Express</span>
+                <span class="case-tag">MongoDB</span>
+                <span class="case-tag">Android</span>
+                <span class="case-tag">Zoom SDK</span>
+                <span class="case-tag">Firebase</span>
+                <span class="case-tag">GCP</span>
+            </div>
+        </div>
+
     </div>
 </section>
 
@@ -512,6 +1029,10 @@
     <div class="section-inner">
         <div class="section-label">Writing</div>
         <h2 class="section-title">Blog</h2>
+        <p class="section-subtitle">
+            Things I've figured out and wanted to write down &mdash; mostly about AI, SQL parsing, and
+            the occasional deep dive.
+        </p>
         <div class="blog-grid">
 
             <a href="https://medium.com/@sasidharc/optimizing-prompts-for-ai-applications-using-textgrad-a-practical-guide-ab4cd71fa706" target="_blank" class="blog-card fade-in">
@@ -606,7 +1127,6 @@
         document.getElementById('navLinks').classList.toggle('open');
     });
 
-    // Close mobile menu on link click
     document.querySelectorAll('.nav-links a').forEach(a => {
         a.addEventListener('click', () => {
             document.getElementById('navLinks').classList.remove('open');
