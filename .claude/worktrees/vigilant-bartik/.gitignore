@@ -1,0 +1,38 @@
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Node.js (if used for tooling)
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# Logs
+*.log
+/tmp/
+
+# Environment
+.env
+.env.local
+
+# Replit
+.replit
+replit.nix

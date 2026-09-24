@@ -376,6 +376,19 @@
             font-family: var(--font-mono);
         }
 
+        .case-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 28px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            transition: gap 0.2s;
+        }
+        .case-link:hover { gap: 12px; color: var(--primary-dark); }
+
         /* Blog Grid */
         .blog-grid {
             display: grid;
@@ -580,14 +593,149 @@
         <div class="section-label">Problems I've Solved</div>
         <h2 class="section-title">Case Studies</h2>
         <p class="section-subtitle">
-            Three problems, framed the way I actually think about them: what was broken, what I tried,
+            Four problems, framed the way I actually think about them: what was broken, what I tried,
             what shipped, and what I'd do differently if I started again tomorrow.
         </p>
 
-        <!-- CASE STUDY 01: Relationship Discovery -->
+        <!-- CASE STUDY 01: NL-to-SQL Accuracy -->
         <div class="case-study fade-in">
             <div class="case-header">
                 <span class="case-number">CASE 01</span>
+                <span class="case-badge badge-current">Current</span>
+            </div>
+            <h3>An accuracy evaluation framework with an enterprise-grade workflow with SLM</h3>
+            <p class="case-tagline">Most of the gains came from removing things &mdash; and from measuring well enough to know which things.</p>
+
+            <div class="diagram-wrap">
+                <svg viewBox="0 0 780 290" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrNl" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                            <polygon points="0 0, 10 5, 0 10" fill="#2d6a8f"/>
+                        </marker>
+                    </defs>
+
+                    <rect class="diag-box" x="20" y="30" width="150" height="90" rx="10"/>
+                    <text class="diag-label" x="95" y="66" text-anchor="middle">Question</text>
+                    <text class="diag-small" x="95" y="92" text-anchor="middle">values, intent, shape</text>
+
+                    <rect class="diag-box" x="215" y="20" width="340" height="110" rx="12"/>
+                    <text class="diag-label" x="385" y="50" text-anchor="middle">Hybrid retrieval</text>
+                    <text class="diag-small" x="385" y="76" text-anchor="middle">LSH values + pgvector + full-text</text>
+                    <text class="diag-small" x="385" y="95" text-anchor="middle">RRF fusion + cross-encoder rerank</text>
+                    <text class="diag-small" x="385" y="114" text-anchor="middle">Kuzu FK shortest paths (bridge tables)</text>
+
+                    <rect class="diag-box-dark" x="600" y="30" width="160" height="90" rx="10"/>
+                    <text class="diag-label-white" x="680" y="66" text-anchor="middle">Generate SQL</text>
+                    <text class="diag-small-light" x="680" y="92" text-anchor="middle">open-weight LLM</text>
+
+                    <path class="diag-arrow" d="M 170 75 L 211 75" marker-end="url(#arrNl)"/>
+                    <path class="diag-arrow" d="M 555 75 L 596 75" marker-end="url(#arrNl)"/>
+
+                    <rect class="diag-box" x="440" y="190" width="200" height="80" rx="10"/>
+                    <text class="diag-label" x="540" y="222" text-anchor="middle">Draft + verify gate</text>
+                    <text class="diag-small" x="540" y="246" text-anchor="middle">bind, execute, ground</text>
+
+                    <rect class="diag-box-fill" x="100" y="190" width="240" height="80" rx="10"/>
+                    <text class="diag-label" x="220" y="222" text-anchor="middle">Eval harness</text>
+                    <text class="diag-small" x="220" y="246" text-anchor="middle">noise floor, flip analysis</text>
+
+                    <path class="diag-arrow" d="M 680 120 C 680 180, 670 230, 644 230" marker-end="url(#arrNl)"/>
+                    <path class="diag-arrow-dashed" d="M 436 230 L 344 230" marker-end="url(#arrNl)"/>
+                    <text class="diag-note" x="170" y="170">every change measured, question by question</text>
+                </svg>
+                <div class="diagram-caption">retrieve narrowly, generate once, check deterministically, measure everything</div>
+            </div>
+
+            <div class="case-details">
+                <div class="detail-block">
+                    <h4>The Problem</h4>
+                    <p>
+                        The Data Analyst Agent answers business questions by writing SQL, and an agent that writes
+                        <em>plausible but wrong</em> SQL is worse than no agent at all. On the BIRD benchmark the first
+                        clean baseline was 63.4% execution accuracy: the model added filters nobody asked for, missed the
+                        bridge table in three-way joins, and a critic step was quietly rewriting correct queries into
+                        wrong ones. The constraint that made it interesting: open-weight models only.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Approach</h4>
+                    <p>
+                        The obvious moves were a bigger model, or an ensemble of agents with an LLM judge. I measured the
+                        ensemble first: the two agents agreed on 97.8% of questions, and even a perfect judge had only
+                        ~1.6 points of headroom. So I went the other way &mdash; fix what the model <em>sees</em>, and
+                        stop the pipeline from undoing correct answers. Before trusting any result I measured the noise:
+                        ~7% of questions flip between two runs of the identical config, so anything under ~1.5 points is
+                        not a signal.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Solution</h4>
+                    <p>
+                        A hybrid retrieval pipeline (LSH value matching, pgvector and Postgres full-text, fused with RRF and
+                        reranked by a cross-encoder) plus pairwise shortest paths over a Kuzu foreign-key graph to
+                        recover bridge tables. Compact, anchor-first context instead of full schemas. A layered prompt
+                        with no contradictory rules. A deterministic draft-verify gate instead of an LLM judge, and
+                        healing restricted to syntax errors. All of it validated through a tiered harness: offline
+                        replay, smoke subset, targeted questions, then full paired runs with per-question flip analysis.
+                    </p>
+                </div>
+
+                <div class="detail-block">
+                    <h4>Outcome</h4>
+                    <p>
+                        About 8 points in two months with Gemma 4 and Qwen3, no fine-tuning &mdash; and the ensemble,
+                        the LLM judge and the multi-agent setup were <em>removed</em> on the way up.
+                    </p>
+                    <div class="metric-row">
+                        <div class="metric">
+                            <span class="metric-value">71.4%</span>
+                            <span class="metric-label">BIRD mini-dev, 4-run mean</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">72.6%</span>
+                            <span class="metric-label">Best single run</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">70.9%</span>
+                            <span class="metric-label">Full BIRD dev (1,534 q)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-block retro">
+                    <h4>What I'd Do Differently</h4>
+                    <p>
+                        Measure the noise floor on day one &mdash; two identical full runs before any experiment. I spent
+                        weeks chasing 0.6-point &ldquo;wins&rdquo; that were noise. I'd also compute the oracle ceiling
+                        before building any ensemble, and log per-question telemetry from the start: it turns
+                        &ldquo;did this help?&rdquo; from a statistics problem into a lookup.
+                    </p>
+                </div>
+            </div>
+
+            <a href="blog/nl-to-sql-bird-findings.html" class="case-link">
+                Read the full write-up: eight findings from 50+ benchmark runs
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+
+            <div class="case-tags">
+                <span class="case-tag">NL-to-SQL</span>
+                <span class="case-tag">Hybrid Retrieval</span>
+                <span class="case-tag">pgvector</span>
+                <span class="case-tag">Kuzu</span>
+                <span class="case-tag">RRF</span>
+                <span class="case-tag">LLM Evaluation</span>
+                <span class="case-tag">Gemma 4</span>
+                <span class="case-tag">Qwen3</span>
+            </div>
+        </div>
+
+        <!-- CASE STUDY 02: Relationship Discovery -->
+        <div class="case-study fade-in">
+            <div class="case-header">
+                <span class="case-number">CASE 02</span>
                 <span class="case-badge badge-current">Current</span>
             </div>
             <h3>An AI agent that discovers relationships across messy enterprise schemas</h3>
@@ -727,10 +875,10 @@
             </div>
         </div>
 
-        <!-- CASE STUDY 02: Workload Migration -->
+        <!-- CASE STUDY 03: Workload Migration -->
         <div class="case-study fade-in">
             <div class="case-header">
-                <span class="case-number">CASE 02</span>
+                <span class="case-number">CASE 03</span>
                 <span class="case-badge badge-recent">Recent Past</span>
             </div>
             <h3>Automating migration of thousands of legacy ETL workloads to cloud warehouses</h3>
@@ -877,10 +1025,10 @@
             </div>
         </div>
 
-        <!-- CASE STUDY 03: Kooklive -->
+        <!-- CASE STUDY 04: Kooklive -->
         <div class="case-study fade-in">
             <div class="case-header">
-                <span class="case-number">CASE 03</span>
+                <span class="case-number">CASE 04</span>
                 <span class="case-badge badge-past">Side Project</span>
             </div>
             <h3>Kooklive: a live-streaming platform for home cooks teaching classes during the pandemic</h3>
@@ -1034,6 +1182,19 @@
             the occasional deep dive.
         </p>
         <div class="blog-grid">
+
+            <a href="blog/nl-to-sql-bird-findings.html" class="blog-card fade-in">
+                <div class="blog-meta">
+                    <span class="blog-platform">On this site</span>
+                    <span class="blog-date">Sep 2026</span>
+                </div>
+                <h3>Chasing the Last Few Points: What 50+ BIRD Runs Taught Me About NL-to-SQL Accuracy</h3>
+                <p>Taking a hybrid-retrieval text-to-SQL pipeline from 63% to ~72% execution accuracy with open-weight Gemma 4 and Qwen3 models: noise floors, prompt bugs, and why ensembles and LLM judges didn't pay.</p>
+                <span class="blog-read-more">
+                    Read article
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+            </a>
 
             <a href="https://medium.com/@sasidharc/optimizing-prompts-for-ai-applications-using-textgrad-a-practical-guide-ab4cd71fa706" target="_blank" class="blog-card fade-in">
                 <div class="blog-meta">

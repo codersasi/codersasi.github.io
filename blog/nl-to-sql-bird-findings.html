@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chasing NL-to-SQL Accuracy | SC</title>
+    <meta name="description" content="What 50+ full BIRD benchmark runs taught me about NL-to-SQL accuracy: noise floors, retrieval, prompts as code, and why ensembles and judges didn't pay.">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2d6a8f;
+            --primary-light: #3a8bc2;
+            --primary-dark: #1e4d6b;
+            --dark: #0f172a;
+            --dark-soft: #1e293b;
+            --gray-700: #374151;
+            --gray-500: #6b7280;
+            --gray-400: #9ca3af;
+            --gray-300: #d1d5db;
+            --gray-200: #e5e7eb;
+            --gray-100: #f3f4f6;
+            --gray-50: #f9fafb;
+            --white: #ffffff;
+            --accent-bg: #eef6fb;
+            --accent-warm: #fef7ed;
+            --accent-green: #ecfdf5;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-hand: 'Caveat', cursive;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--gray-700);
+            line-height: 1.75;
+            background: var(--white);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--gray-200);
+            transition: box-shadow 0.3s;
+        }
+        nav.scrolled { box-shadow: 0 1px 12px rgba(0,0,0,0.08); }
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--dark);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        .nav-brand span { color: var(--primary); }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray-500);
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            letter-spacing: 0.3px;
+        }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Article */
+        article {
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 130px 24px 80px;
+        }
+        .kicker {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 14px;
+        }
+        h1 {
+            font-size: clamp(2rem, 4.6vw, 2.9rem);
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1.15;
+            letter-spacing: -1.2px;
+            margin-bottom: 18px;
+        }
+        .dek {
+            font-size: 1.15rem;
+            color: var(--gray-500);
+            margin-bottom: 22px;
+        }
+        .byline {
+            font-size: 0.85rem;
+            color: var(--gray-400);
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 36px;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+            margin: 52px 0 14px;
+        }
+        h2 .num {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--primary);
+            display: block;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        h3 {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 28px 0 8px;
+        }
+        p { margin-bottom: 18px; }
+        ul, ol { margin: 0 0 20px 22px; }
+        li { margin-bottom: 8px; }
+        strong { color: var(--dark); }
+        a { color: var(--primary); }
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.84em;
+            background: var(--gray-100);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--dark-soft);
+        }
+        pre {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            line-height: 1.6;
+            background: var(--dark);
+            color: #e2e8f0;
+            padding: 18px 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-bottom: 22px;
+        }
+
+        /* Headline stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin: 8px 0 34px;
+        }
+        .stat {
+            background: var(--accent-bg);
+            border-radius: 12px;
+            padding: 18px 18px 16px;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+        .stat-label {
+            font-size: 0.82rem;
+            color: var(--gray-500);
+            line-height: 1.45;
+            margin-top: 6px;
+        }
+
+        /* Callouts */
+        .callout {
+            border-left: 3px solid var(--primary);
+            background: var(--gray-50);
+            padding: 16px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 0 0 24px;
+        }
+        .callout p:last-child { margin-bottom: 0; }
+        .callout-label {
+            font-family: var(--font-hand);
+            font-size: 1.35rem;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .callout.warm { border-color: #c2410c; background: var(--accent-warm); }
+        .callout.warm .callout-label { color: #c2410c; }
+
+        /* Tables */
+        .table-wrap { overflow-x: auto; margin: 0 0 24px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: top;
+        }
+        th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--gray-500);
+            font-weight: 600;
+        }
+        td.n { font-family: var(--font-mono); font-size: 0.82rem; white-space: nowrap; color: var(--dark); }
+
+        /* Figures */
+        figure { margin: 8px 0 30px; }
+        .diagram-wrap {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 18px;
+            position: relative;
+        }
+        .diagram-wrap svg { width: 100%; height: auto; display: block; }
+        figcaption {
+            font-size: 0.82rem;
+            color: var(--gray-500);
+            margin-top: 10px;
+            text-align: center;
+        }
+        .diag-box { fill: var(--white); stroke: var(--primary); stroke-width: 2; }
+        .diag-box-fill { fill: var(--accent-bg); stroke: var(--primary); stroke-width: 2; }
+        .diag-box-dark { fill: var(--primary); stroke: var(--primary-dark); stroke-width: 2; }
+        .diag-label { font-family: var(--font-hand); font-size: 22px; fill: var(--dark); font-weight: 600; }
+        .diag-label-white { font-family: var(--font-hand); font-size: 22px; fill: var(--white); font-weight: 600; }
+        .diag-small { font-family: var(--font-mono); font-size: 11px; fill: var(--gray-500); }
+        .diag-small-light { font-family: var(--font-mono); font-size: 11px; fill: rgba(255,255,255,0.85); }
+        .diag-arrow { stroke: var(--primary); stroke-width: 2; fill: none; }
+        .diag-arrow-dashed { stroke: var(--primary); stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
+        .diag-note { font-family: var(--font-hand); font-size: 18px; fill: var(--primary); }
+
+        /* Chart */
+        .chart-grid { stroke: var(--gray-200); stroke-width: 1; }
+        .chart-axis { font-family: var(--font-main); font-size: 11px; fill: var(--gray-500); }
+        .chart-line { stroke: var(--primary); stroke-width: 2; fill: none; }
+        .chart-dot { fill: var(--primary); stroke: var(--gray-50); stroke-width: 2; }
+        .chart-hit { fill: transparent; cursor: pointer; }
+        .chart-val { font-family: var(--font-main); font-size: 11px; font-weight: 600; fill: var(--dark); }
+        .chart-band { fill: var(--primary); opacity: 0.08; }
+        .tooltip {
+            position: absolute;
+            pointer-events: none;
+            background: var(--dark);
+            color: var(--white);
+            font-size: 0.78rem;
+            line-height: 1.45;
+            padding: 8px 11px;
+            border-radius: 8px;
+            max-width: 240px;
+            opacity: 0;
+            transition: opacity 0.12s;
+            z-index: 5;
+        }
+        .tooltip strong { color: var(--white); }
+
+        .back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            text-decoration: none;
+            margin-top: 40px;
+        }
+
+        footer {
+            background: var(--dark);
+            color: var(--gray-400);
+            padding: 36px 24px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        footer a { color: var(--gray-300); text-decoration: none; margin: 0 10px; }
+        footer a:hover { color: var(--primary-light); }
+
+        @media (max-width: 768px) {
+            .nav-links { gap: 18px; }
+            .stats { grid-template-columns: 1fr; }
+            article { padding-top: 110px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav id="navbar">
+    <div class="nav-inner">
+        <a href="../index.html" class="nav-brand">S<span>C</span></a>
+        <ul class="nav-links">
+            <li><a href="../index.html#work">Work</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li><a href="../Sasidhar_Chintapalli_Resume.docx" target="_blank">Resume</a></li>
+        </ul>
+    </div>
+</nav>
+
+<article>
+    <span class="kicker">NL-to-SQL &middot; Field notes</span>
+    <h1>Chasing the last few points: what 50+ BIRD runs taught me about NL-to-SQL accuracy</h1>
+    <p class="dek">
+        I spent the summer pushing a text-to-SQL pipeline from 63% to about 72% execution accuracy
+        with open-weight models (Gemma 4 31B and Qwen3). Most of what moved the number wasn't what I expected, and
+        most of what I expected to work didn't.
+    </p>
+    <div class="byline">Sasidhar Chintapalli &middot; September 2026 &middot; ~14 min read</div>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value">63.4%&nbsp;&rarr;&nbsp;71.4%</div>
+            <div class="stat-label">BIRD mini-dev EX, first clean baseline to 4-run mean (best single run 72.6%)</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">70.9%</div>
+            <div class="stat-label">on the full 1,534-question BIRD dev set</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">~7%</div>
+            <div class="stat-label">of questions flip between two runs of the <em>identical</em> config</div>
+        </div>
+    </div>
+
+    <p>
+        The system is a modular natural-language-to-SQL backend. You point it at
+        a database, it ingests and profiles the schema, and at question time it retrieves the relevant
+        tables and columns, builds a prompt, and asks an LLM for SQL. I evaluated it on
+        <a href="https://bird-bench.github.io/" target="_blank">BIRD</a>, mostly on the 500-question
+        <em>mini-dev</em> split (148 simple, 250 moderate, 102 challenging questions across 11 databases),
+        using the official execution-accuracy (EX) metric: the predicted SQL counts as correct only if
+        it returns the same result set as the gold SQL.
+    </p>
+    <p>
+        All the accuracy numbers here come from open-weight models: <strong>Gemma 4 31B</strong> and
+        <strong>Qwen3</strong>, with no frontier API models in the loop. That constraint turned out to be useful: a model that can't brute-force its way past a bad prompt
+        shows you exactly where the pipeline is weak.
+    </p>
+    <p>
+        Below is the pipeline, how the number moved, and the eight findings I'd want someone to tell me
+        before I started.
+    </p>
+
+    <h2><span class="num">THE PIPELINE</span>Ten stages from question to SQL</h2>
+    <p>
+        Ingestion runs once per database: it reads the schema, profiles each column (row count, distinct
+        count, min/max, nulls, a few sample values), embeds column descriptions into pgvector, indexes
+        them for Postgres full-text search, builds an LSH index over sample values, and writes tables,
+        columns and foreign keys into a <strong>Kuzu</strong> graph.
+    </p>
+    <p>At question time:</p>
+
+    <figure>
+        <div class="diagram-wrap">
+            <svg viewBox="0 0 700 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Question-time pipeline: extraction, hybrid retrieval, fusion, draft-verify, rerank, context assembly, generation, gate and critic">
+                <defs>
+                    <marker id="pa" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                        <polygon points="0 0, 10 5, 0 10" fill="#2d6a8f"/>
+                    </marker>
+                </defs>
+
+                <!-- Row 1: understand the question -->
+                <rect class="diag-box" x="20" y="20" width="200" height="70" rx="10"/>
+                <text class="diag-label" x="120" y="50" text-anchor="middle">Extract</text>
+                <text class="diag-small" x="120" y="72" text-anchor="middle">values, intent, shape</text>
+
+                <rect class="diag-box" x="250" y="20" width="200" height="70" rx="10"/>
+                <text class="diag-label" x="350" y="50" text-anchor="middle">Expand</text>
+                <text class="diag-small" x="350" y="72" text-anchor="middle">paraphrases, temp 0.0</text>
+
+                <path class="diag-arrow" d="M 220 55 L 246 55" marker-end="url(#pa)"/>
+
+                <!-- Hybrid search -->
+                <rect class="diag-box-fill" x="20" y="125" width="660" height="110" rx="12"/>
+                <text class="diag-label" x="350" y="152" text-anchor="middle">Hybrid search</text>
+                <rect class="diag-box" x="40" y="165" width="140" height="52" rx="8"/>
+                <text class="diag-small" x="110" y="187" text-anchor="middle">LSH</text>
+                <text class="diag-small" x="110" y="203" text-anchor="middle">value match</text>
+                <rect class="diag-box" x="200" y="165" width="140" height="52" rx="8"/>
+                <text class="diag-small" x="270" y="187" text-anchor="middle">pgvector</text>
+                <text class="diag-small" x="270" y="203" text-anchor="middle">semantic</text>
+                <rect class="diag-box" x="360" y="165" width="140" height="52" rx="8"/>
+                <text class="diag-small" x="430" y="187" text-anchor="middle">Postgres FTS</text>
+                <text class="diag-small" x="430" y="203" text-anchor="middle">lexical</text>
+                <rect class="diag-box" x="520" y="165" width="140" height="52" rx="8"/>
+                <text class="diag-small" x="590" y="187" text-anchor="middle">Kuzu graph</text>
+                <text class="diag-small" x="590" y="203" text-anchor="middle">FK shortest paths</text>
+
+                <path class="diag-arrow" d="M 350 90 L 350 121" marker-end="url(#pa)"/>
+
+                <!-- Row 3 -->
+                <rect class="diag-box" x="20" y="270" width="150" height="70" rx="10"/>
+                <text class="diag-label" x="95" y="300" text-anchor="middle">RRF fuse</text>
+                <text class="diag-small" x="95" y="322" text-anchor="middle">k = 60</text>
+
+                <rect class="diag-box" x="195" y="270" width="150" height="70" rx="10"/>
+                <text class="diag-label" x="270" y="300" text-anchor="middle">Draft + verify</text>
+                <text class="diag-small" x="270" y="322" text-anchor="middle">execute, ground</text>
+
+                <rect class="diag-box" x="370" y="270" width="150" height="70" rx="10"/>
+                <text class="diag-label" x="445" y="300" text-anchor="middle">Rerank</text>
+                <text class="diag-small" x="445" y="322" text-anchor="middle">cross-encoder</text>
+
+                <rect class="diag-box" x="545" y="270" width="135" height="70" rx="10"/>
+                <text class="diag-label" x="612" y="300" text-anchor="middle">Assemble</text>
+                <text class="diag-small" x="612" y="322" text-anchor="middle">anchors first</text>
+
+                <path class="diag-arrow" d="M 95 235 L 95 266" marker-end="url(#pa)"/>
+                <path class="diag-arrow" d="M 170 305 L 191 305" marker-end="url(#pa)"/>
+                <path class="diag-arrow" d="M 345 305 L 366 305" marker-end="url(#pa)"/>
+                <path class="diag-arrow" d="M 520 305 L 541 305" marker-end="url(#pa)"/>
+
+                <!-- Row 4 -->
+                <rect class="diag-box-dark" x="370" y="380" width="150" height="70" rx="10"/>
+                <text class="diag-label-white" x="445" y="410" text-anchor="middle">Generate</text>
+                <text class="diag-small-light" x="445" y="432" text-anchor="middle">single agent</text>
+
+                <rect class="diag-box" x="195" y="380" width="150" height="70" rx="10"/>
+                <text class="diag-label" x="270" y="410" text-anchor="middle">Gate</text>
+                <text class="diag-small" x="270" y="432" text-anchor="middle">draft vs gen</text>
+
+                <rect class="diag-box" x="20" y="380" width="150" height="70" rx="10"/>
+                <text class="diag-label" x="95" y="410" text-anchor="middle">Critic</text>
+                <text class="diag-small" x="95" y="432" text-anchor="middle">conservative</text>
+
+                <path class="diag-arrow" d="M 612 340 C 612 380, 560 415, 524 415" marker-end="url(#pa)"/>
+                <path class="diag-arrow" d="M 370 415 L 349 415" marker-end="url(#pa)"/>
+                <path class="diag-arrow" d="M 195 415 L 174 415" marker-end="url(#pa)"/>
+                <path class="diag-arrow-dashed" d="M 270 340 L 270 376"/>
+                <text class="diag-note" x="282" y="364">draft SQL</text>
+            </svg>
+        </div>
+        <figcaption>Question-time flow. The gate and the verifier are deterministic; only extraction, expansion, draft, generation and the critic call an LLM.</figcaption>
+    </figure>
+
+    <ol>
+        <li><strong>Extract</strong> literal values, intent tags and the expected output shape from the question.</li>
+        <li><strong>Expand</strong> the question into paraphrases to widen recall.</li>
+        <li><strong>Hybrid search</strong> across four layers: LSH value matching (does <code>'APS'</code> actually appear in some column?), pgvector semantic search, Postgres full-text search, and pairwise shortest paths over the foreign-key graph in Kuzu to find join routes, including bridge tables.</li>
+        <li><strong>Fuse</strong> lexical and semantic results with Reciprocal Rank Fusion.</li>
+        <li><strong>Draft + verify:</strong> a fast draft SQL on the wide context, then a deterministic check battery: does it bind, execute, use grounded columns, match the literal values, return the expected shape?</li>
+        <li><strong>Rerank</strong> every fragment with a cross-encoder, keeping at least one column per candidate table.</li>
+        <li><strong>Assemble</strong> the context: join anchors first, then the relevance-ranked tail up to a column budget.</li>
+        <li><strong>Generate</strong> the SQL.</li>
+        <li><strong>Gate:</strong> if draft and generation disagree, score both with the same deterministic battery and keep the one with the lower penalty.</li>
+        <li><strong>Critic:</strong> a conservative last check that can trigger one regeneration.</li>
+    </ol>
+
+    <h2><span class="num">THE CURVE</span>How the number actually moved</h2>
+    <p>
+        Here are the milestones on the 500-question set. Where I have several runs of the same config,
+        the point is the mean.
+    </p>
+
+    <figure>
+        <div class="diagram-wrap" id="chartWrap">
+            <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Line chart of BIRD mini-dev execution accuracy rising from 63.4% in June to a 72.2% mean in August">
+                <!-- y grid: 60..75, plot y from 250 (60) to 30 (75): 14.667 px per pt -->
+                <g>
+                    <line class="chart-grid" x1="50" y1="250" x2="660" y2="250"/>
+                    <line class="chart-grid" x1="50" y1="176.7" x2="660" y2="176.7"/>
+                    <line class="chart-grid" x1="50" y1="103.3" x2="660" y2="103.3"/>
+                    <line class="chart-grid" x1="50" y1="30" x2="660" y2="30"/>
+                    <text class="chart-axis" x="42" y="254" text-anchor="end">60%</text>
+                    <text class="chart-axis" x="42" y="180.7" text-anchor="end">65%</text>
+                    <text class="chart-axis" x="42" y="107.3" text-anchor="end">70%</text>
+                    <text class="chart-axis" x="42" y="34" text-anchor="end">75%</text>
+                </g>
+                <!-- identical-config noise band 68.0–69.4 (July) -->
+                <rect class="chart-band" x="300" y="112.1" width="120" height="20.5" rx="3"/>
+                <text class="diag-note" x="300" y="150" style="font-size:16px">noise band of one config</text>
+
+                <polyline class="chart-line" points="90,200.1 300,117.9 370,103.3 480,82.8 600,74.0"/>
+
+                <g class="pt" data-tip="<strong>Jun 9 · 63.4%</strong><br>First clean baseline. Two agents + LLM judge + critic.">
+                    <circle class="chart-dot" cx="90" cy="200.1" r="5"/>
+                    <text class="chart-val" x="90" y="222" text-anchor="middle">63.4</text>
+                    <circle class="chart-hit" cx="90" cy="200.1" r="18"/>
+                </g>
+                <g class="pt" data-tip="<strong>Jul 10 · 69.0%</strong><br>Single agent, bridge-table recovery, compact profiles, syntax-only healing.">
+                    <circle class="chart-dot" cx="300" cy="117.9" r="5"/>
+                    <text class="chart-val" x="286" y="104" text-anchor="end">69.0</text>
+                    <circle class="chart-hit" cx="300" cy="117.9" r="18"/>
+                </g>
+                <g class="pt" data-tip="<strong>Jul 17 · 70.0%</strong><br>Merged two contradictory DISTINCT rules into one. First run ≥ 70%.">
+                    <circle class="chart-dot" cx="370" cy="103.3" r="5"/>
+                    <text class="chart-val" x="370" y="90" text-anchor="middle">70.0</text>
+                    <circle class="chart-hit" cx="370" cy="103.3" r="18"/>
+                </g>
+                <g class="pt" data-tip="<strong>Jul 29 · 71.4% (4-run mean)</strong><br>3-layer prompt restructure; a guideline file had been loaded twice.">
+                    <circle class="chart-dot" cx="480" cy="82.8" r="5"/>
+                    <text class="chart-val" x="480" y="69" text-anchor="middle">71.4</text>
+                    <circle class="chart-hit" cx="480" cy="82.8" r="18"/>
+                </g>
+                <g class="pt" data-tip="<strong>Aug 6 · 72.2% (2-run mean)</strong><br>Plateau. Best single run 72.6%.">
+                    <circle class="chart-dot" cx="600" cy="74.0" r="5"/>
+                    <text class="chart-val" x="600" y="61" text-anchor="middle">72.2</text>
+                    <circle class="chart-hit" cx="600" cy="74.0" r="18"/>
+                </g>
+
+                <text class="chart-axis" x="90" y="275" text-anchor="middle">Jun 9</text>
+                <text class="chart-axis" x="300" y="275" text-anchor="middle">Jul 10</text>
+                <text class="chart-axis" x="370" y="275" text-anchor="middle">Jul 17</text>
+                <text class="chart-axis" x="480" y="275" text-anchor="middle">Jul 29</text>
+                <text class="chart-axis" x="600" y="275" text-anchor="middle">Aug 6</text>
+            </svg>
+            <div class="tooltip" id="tip"></div>
+        </div>
+        <figcaption>Execution accuracy on BIRD mini-dev (500 questions). The y-axis starts at 60%. Hover a point for what changed.</figcaption>
+    </figure>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Date</th><th>Simple</th><th>Moderate</th><th>Challenging</th><th>Total</th><th>What changed</th></tr></thead>
+            <tbody>
+                <tr><td class="n">Jun 9</td><td class="n">75.7</td><td class="n">61.2</td><td class="n">51.0</td><td class="n">63.4</td><td>First clean baseline (earlier ~40% runs were API rate-limit errors, not model failures)</td></tr>
+                <tr><td class="n">Jul 10</td><td class="n">80.4</td><td class="n">67.2</td><td class="n">56.9</td><td class="n">69.0</td><td>Context and join fixes, single agent, syntax-only healing</td></tr>
+                <tr><td class="n">Jul 17</td><td class="n">81.8</td><td class="n">68.8</td><td class="n">55.9</td><td class="n">70.0</td><td>One merged DISTINCT rule</td></tr>
+                <tr><td class="n">Jul 29</td><td class="n">83.1</td><td class="n">69.9</td><td class="n">58.1</td><td class="n">71.4</td><td>3-layer prompt restructure (4-run mean)</td></tr>
+                <tr><td class="n">Aug 6</td><td class="n">83.1</td><td class="n">71.8</td><td class="n">57.4</td><td class="n">72.2</td><td>Plateau (2-run mean; best single run 72.6)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p>
+        About 8 points in two months. Notice what's <em>not</em> on that list: no new model, no fine-tuning,
+        no ensemble. The ensemble, the LLM judge and the multi-agent setup were in the June baseline and were
+        <em>removed</em> on the way up.
+    </p>
+
+    <h2><span class="num">FINDING 01</span>Measure your noise floor before you measure anything else</h2>
+    <p>
+        This was the single most important thing I learned, and I learned it late. I ran the identical
+        config, same commit, same settings, twice. <strong>About 35 of 500 questions (~7%) gave different answers</strong>.
+        Identical-config totals spanned 68.0 to 69.4. So any single-run difference under about 1.5 points is
+        noise, and I had been reading tea leaves for weeks.
+    </p>
+    <p>Three things followed from that:</p>
+    <ul>
+        <li>
+            <strong>Small "regression subsets" lie in the flattering direction.</strong> My 50-question
+            smoke set scored 100% on a change (<code>SEARCH_TOP_K=5</code>) that cost about a point on the
+            full 500. The subset was built from questions good runs already pass, so it can only tell you
+            "not catastrophically broken". A score <em>below</em> expectations is a real stop signal; a perfect
+            score means almost nothing.
+        </li>
+        <li>
+            <strong>"Consistent across two runs" doesn't filter noise either.</strong> With a 7% flip rate over
+            500 questions, some questions will flip the same way in both runs of each arm by chance. In one A/B,
+            that filter reported 5 regressions. When I checked which questions the change could actually
+            <em>reach</em>, only 1 of the 5 had ever touched the changed code path. The other 4 were noise
+            that happened to line up.
+        </li>
+        <li>
+            <strong>Blast-radius analysis beats totals.</strong> I added per-question telemetry recording which
+            checks fired. Now "did this change help?" becomes "of the 11 questions where the new guard acted,
+            how many flipped, and which way?" That answer (1 gain, 0 losses) was noise-free, when the total
+            was not.
+        </li>
+    </ul>
+    <p>I ended up with a tiered validation flow, cheapest first. Any tier can stop the change:</p>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Tier</th><th>Cost</th><th>What it tells you</th></tr></thead>
+            <tbody>
+                <tr><td class="n">0 · Replay</td><td>free</td><td>Re-run deterministic logic (reranking, gating, ordering) against logged retrievals from past runs. Bounds the risk; doesn't decide.</td></tr>
+                <tr><td class="n">1 · Smoke</td><td>~15 min</td><td>50-question subset, compared question by question against a fresh baseline. Catches breakage only.</td></tr>
+                <tr><td class="n">2 · Targets</td><td>minutes</td><td>If the change aims at specific questions, do <em>those</em> flip? Question-level evidence has no noise.</td></tr>
+                <tr><td class="n">3 · Full pair</td><td>~2.5 hrs</td><td>Full 500, twice, sequentially, then flip analysis. The only real gate.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p>
+        One more boring rule that saved me: every run records its git commit, uncommitted diff, and the live
+        config values that aren't in version control. Twice, an untracked <code>.env</code> change silently
+        altered behaviour, once by swapping in a weaker reranker. Without the capture I'd have credited or
+        blamed the wrong code change.
+    </p>
+
+    <h2><span class="num">FINDING 02</span>After a point, retrieval isn't the bottleneck</h2>
+    <p>
+        The instinct with RAG-style systems is that a wrong answer means you didn't retrieve the right thing.
+        Early on that was partly true. In one traced sample of 25 failures, I followed each required gold column
+        through every stage to see where it was first dropped:
+    </p>
+    <ul>
+        <li>3 were never retrieved by search</li>
+        <li>2 were dropped at RRF fusion, 1 at the reranker</li>
+        <li><strong>19 had every needed column in the prompt</strong>, and the model still wrote the wrong SQL</li>
+    </ul>
+    <p>
+        After fixing bridge tables and context truncation (below), gold-column recall in the final context
+        reached <strong>100%</strong> on my precheck. More retrieval work couldn't move the number. The
+        remaining errors were reasoning errors: an extra <code>WHERE</code> clause, <code>SUM</code> where
+        gold uses <code>AVG</code>, <code>COUNT(DISTINCT x)</code> where gold uses <code>COUNT(*)</code>.
+    </p>
+    <p>
+        That doesn't mean retrieval choices stopped mattering. Two retrieval ablations were still clearly
+        negative:
+    </p>
+    <ul>
+        <li>
+            <strong>Narrow search hurts.</strong> Cutting candidates per search layer from 40 to 5 lost about a point,
+            mostly on multi-table challenging questions. Recall before reranking still matters.
+        </li>
+        <li>
+            <strong>RRF is not a reranker.</strong> Dropping the cross-encoder and relying on rank fusion alone failed
+            immediately. On a Formula 1 question it picked the decoy <code>results</code> table over
+            <code>driverStandings</code>. When lexical and semantic search share a blind spot, fusing them keeps it.
+        </li>
+    </ul>
+
+    <h2><span class="num">FINDING 03</span>More context makes a mid-size model worse</h2>
+    <p>
+        Injecting full table schemas into the generation prompt collapsed accuracy from
+        <strong>69.8% to 64.4%</strong>. The model latched onto similar-looking columns and added filters
+        and joins nobody asked for. The two biggest failure categories in my June analysis were
+        <em>extra WHERE conditions</em> and <em>unnecessary JOINs</em>.
+    </p>
+    <p>What worked instead:</p>
+    <ul>
+        <li>
+            <strong>Compact column profiles.</strong> I replaced prose like "Contains 10 distinct values with no
+            missing values…" with <code>distinct=10 | range=[2010, 2020] | samples=['2012','2013']</code>.
+            The schema block got about 3× smaller.
+        </li>
+        <li>
+            <strong>"Expansion-lite" context.</strong> Only the ranked columns, plus primary/foreign-key anchors
+            so joins still work. Same accuracy as full-table expansion with <strong>16% less context</strong>.
+        </li>
+        <li>
+            <strong>Anchors at the head of the budget.</strong> A column cap was silently truncating join keys
+            that had been appended at the tail. Moving anchors to the front fixed two join failures outright.
+        </li>
+    </ul>
+    <div class="callout">
+        <div class="callout-label">Aside</div>
+        <p>
+            An earlier finding said "full table schema is a critical safety net". It was true when I measured
+            it, because retrieval was still truncating results. Once truncation was gone, the safety net was
+            just noise. I now keep a list of <em>tried and removed</em> ideas, each with the measurement
+            that killed it and the conditions it was measured under. Otherwise good-sounding ideas come back
+            every few weeks.
+        </p>
+    </div>
+
+    <h2><span class="num">FINDING 04</span>The graph earns its place on joins</h2>
+    <p>
+        The biggest single class of early failures was a <strong>missing bridge table</strong>. Take
+        <code>member &rarr; attendance &rarr; event</code>. The question mentions members and events, so search
+        finds both. But <code>attendance</code> has nothing descriptive to match, so it never shows up, and
+        the model can't write the join.
+    </p>
+    <p>
+        Keeping the FK structure in a graph database made the fix natural. I take the tables that retrieval
+        is confident about and ask Kuzu for the top-N shortest paths between each pair (up to 3 hops).
+        Intermediate tables and their join keys go into the context automatically. That replaced an earlier
+        BFS expansion outright: the pairwise paths already contain the bridges, and the BFS mostly added
+        noise.
+    </p>
+    <p>
+        A related fix was <strong>starvation prevention</strong> in the reranker. With a flat top-k, one table
+        with ten matching columns could push every other table out of the prompt entirely. Now each retrieved
+        table keeps at least its best column.
+    </p>
+
+    <h2><span class="num">FINDING 05</span>Prompts are code, with code's bugs</h2>
+    <p>Three of my biggest jumps came from prompt <em>bugs</em>, not prompt <em>ideas</em>:</p>
+    <h3>Contradictory rules: the model follows the permissive one</h3>
+    <p>
+        One guideline said "use <code>COUNT(DISTINCT)</code> when duplicates are expected". I later added a
+        second rule forbidding unnecessary <code>DISTINCT</code>. The failures didn't go away, because the
+        first rule licensed exactly what the second forbade. Merging them into one unambiguous rule fixed the
+        target questions and produced the first run above 70%. My rule now: <strong>before adding a guideline,
+        read the whole file; never keep two rules covering one decision.</strong>
+    </p>
+    <h3>A guideline file loaded twice</h3>
+    <p>
+        A refactor had one guidelines file injected into both the system prompt and the user prompt. I
+        restructured the prompt into three layers, each loaded exactly once: a style shell (role, reasoning
+        structure, output contract), dialect-agnostic guidelines, and dialect-specific rules. That was worth
+        <strong>+1.4 EX</strong> (70.0 &rarr; 71.4 over four runs).
+    </p>
+    <h3>A dead alias confounded weeks of A/B tests</h3>
+    <p>
+        Two prompt "styles" I had been comparing mapped to <em>the same file</em>. Every historical comparison
+        between them was measuring noise. Only a single-variable A/B with per-question telemetry exposed it.
+    </p>
+    <p>
+        The broader principle I landed on: <strong>code checks stay structural; semantic judgment lives in the
+        prompt.</strong> Code can verify that SQL binds, executes, uses real columns and returns the expected
+        number of columns. Code should not decide "was DISTINCT asked for?" by regex over the question. I tried
+        that with dataset-specific "trap" regexes; they overfit and piled up. Replacing them with checklist rules
+        in the prompt fixed the same target questions without the maintenance cost.
+    </p>
+
+    <h2><span class="num">FINDING 06</span>Self-correction breaks correct answers</h2>
+    <p>
+        In the June baseline, the best single agent scored 65.0% but the final output scored 63.4%. The
+        critic-and-heal step was <strong>turning correct SQL into wrong SQL</strong>. I estimated about 19
+        questions harmed per 500.
+    </p>
+    <ul>
+        <li><strong>Healing is now syntax-only.</strong> It runs only when <code>EXPLAIN QUERY PLAN</code> fails. Valid SQL is never "improved".</li>
+        <li>
+            <strong>A hard "intent mismatch" trigger fired on 38% of questions, and 86% of the regenerations it
+            caused were futile.</strong> Demoting it to a soft warning in the prompt cost nothing and removed
+            a lot of churn.
+        </li>
+        <li>
+            <strong>The draft-verify stage paid for itself in cost, not accuracy.</strong> It was accuracy-neutral,
+            but a verified draft can short-circuit generation. That cut generation calls by about 50% and futile
+            regenerations from 86% to 21%.
+        </li>
+    </ul>
+    <p>
+        One bug here is worth describing because it's so easy to write. The value checker decided "this column
+        doesn't contain <code>'APS'</code>" by looking only at the top-5 <em>sampled</em> LSH matches. On a
+        high-cardinality column (220 distinct values, 18 real <code>'APS'</code> rows) the sample missed it,
+        flagged the <em>correct</em> filter as a critical mismatch, and the gate shipped the wrong query.
+        The fix is one database lookup to confirm absence before flagging. The general lesson: <strong>a
+        sample can prove presence, never absence.</strong>
+    </p>
+
+    <h2><span class="num">FINDING 07</span>Ensembles, judges and multi-agent didn't pay</h2>
+    <p>
+        This was the most expensive lesson because it's the most appealing idea. The evidence stacked up
+        from several directions:
+    </p>
+    <ul>
+        <li>
+            <strong>The two agents agreed 97.8% of the time.</strong> In June, a "divide and conquer" agent and a
+            "query plan" agent produced identical SQL on 489 of 500 questions. The LLM judge picked agent A 89.6%
+            of the time, even though B was better on challenging questions.
+        </li>
+        <li>
+            <strong>Multi-agent lost on average:</strong> 68.2% vs 69.3% for single-agent across three runs each,
+            with higher variance.
+        </li>
+        <li>
+            <strong>The oracle ceiling was tiny.</strong> Comparing two prompt styles on identical code: both right on
+            341, only one right on 27, <strong>both wrong on 132</strong>. A perfect judge could reach 73.6% against
+            72.0% for the better style alone. No judge is perfect, so no ensemble can pay for twice the cost.
+        </li>
+        <li>
+            <strong>Selectors were near chance.</strong> Across 10 logged runs, even a perfect per-run choice between
+            the draft and the generated SQL would reach only 73.7%. On the questions where the choice mattered, every
+            selector I tried, an LLM judge included, was barely better than a coin flip. A simple deterministic
+            penalty score beat the LLM judge.
+        </li>
+        <li><strong>Majority voting over ~20 candidates scored exactly the current EX.</strong></li>
+    </ul>
+    <div class="callout warm">
+        <div class="callout-label">The number that matters</div>
+        <p>
+            <strong>95 questions (19%) are never answered correctly by any candidate in any run.</strong> That's
+            where the headroom is. Selection can only choose between candidates you already have. If they share
+            the same blind spot, choosing better doesn't help.
+        </p>
+    </div>
+    <p>
+        If I could give one piece of advice here: <strong>compute the oracle ceiling before building an ensemble.</strong>
+        Once you have two arms logged, it costs nothing to calculate.
+    </p>
+
+    <h2><span class="num">FINDING 08</span>The benchmark's gold SQL has opinions</h2>
+    <p>
+        22 failures were "arity" errors: the prediction returned a different number of columns than gold.
+        That looked like a prompt problem. My guidelines only warned against projecting <em>too many</em> columns,
+        and most of these errors projected too few. So I rewrote the guideline to be symmetric and to name the
+        compound-question pattern explicitly. I verified the new text was actually in the assembled prompt.
+        <strong>It fixed 0 of 22.</strong>
+    </p>
+    <p>When I looked closer, most of the class wasn't model error:</p>
+    <ul>
+        <li>45% were gold queries projecting extra columns, sometimes an unrequested primary key or the ordering metric, that my own guidelines (reasonably) forbid</li>
+        <li>18% were gold splitting a person's name into first and last name, a dataset convention</li>
+        <li>14% were gold emitting a <code>RANK()</code> column no question asks for</li>
+    </ul>
+    <p>
+        The remainder had a telling signature. On compound questions ("who is X and how much did they spend?")
+        the model returns <em>exactly one</em> of the asks, and which one survives looks arbitrary. That's a
+        capability limit, not an instruction-following gap. Lesson: some of the errors on a leaderboard are
+        convention mismatches, and no self-consistent rule will recover them. Know which of your errors those
+        are before spending a week on them.
+    </p>
+    <p>
+        A related trap: on the full 1,534-question BIRD dev set the pipeline scores 70.9%, a bit under
+        mini-dev. mini-dev is a cleaned subset of dev, and I tuned on it. When I split one improvement by
+        subset membership, <strong>all</strong> of the gain was inside the 500 I'd tuned on; the held-out
+        1,034 were flat to slightly negative. Always check your wins on data you didn't tune against.
+    </p>
+
+    <h2><span class="num">WHERE IT STANDS</span>The plateau is real</h2>
+    <p>
+        With open-weight models in the 30B range, the best configurations sit in a roughly 71&ndash;72.6% band,
+        and high single runs are the top of the noise, not the centre. Retrieval is saturated and selection
+        is exhausted, so the remaining levers are on the generation side: a stronger model with prompts tuned
+        to its own failure modes (guidelines tuned against one model's mistakes don't transfer for free), or a
+        real change in how generation reasons about compound questions.
+    </p>
+
+    <h2><span class="num">IN HINDSIGHT</span>What I'd do differently</h2>
+    <ul>
+        <li><strong>Measure the noise floor on day one.</strong> Two identical full runs before any experiment. I'd have skipped weeks of chasing 0.6-point "wins".</li>
+        <li><strong>Add per-question telemetry before it's needed.</strong> Which checks fired, which candidate the gate kept, why. It turns "did this help?" from a statistics problem into a lookup.</li>
+        <li><strong>Log tried-and-removed ideas with the measurement that killed them.</strong> Cheap to write, and it stopped me rebuilding the same bad idea more than once.</li>
+        <li><strong>Check oracle ceilings and gold-column recall first.</strong> Both are free once runs are logged. Both would have told me early that selection and retrieval were saturated, and that the 19% "never correct" set is where to dig.</li>
+        <li><strong>One EX-relevant change per validation cycle.</strong> Batched changes felt faster and made every result unattributable.</li>
+    </ul>
+    <p>
+        Most of the gains came from removing things: a judge, a second agent, a duplicated prompt, a
+        contradictory rule, a critic that was too eager, context the model didn't need. At this stage the useful
+        work was less about adding capability and more about subtracting sources of confusion, and measuring
+        well enough to tell the difference.
+    </p>
+
+    <a href="../index.html#blog" class="back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to all writing
+    </a>
+</article>
+
+<footer>
+    <a href="https://www.linkedin.com/in/sasich" target="_blank">LinkedIn</a>
+    <a href="https://github.com/codersasi" target="_blank">GitHub</a>
+    <a href="https://medium.com/@sasidharc" target="_blank">Medium</a>
+    <a href="../index.html">Home</a>
+</footer>
+
+<script>
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    const wrap = document.getElementById('chartWrap');
+    const tip = document.getElementById('tip');
+    wrap.querySelectorAll('.pt').forEach(g => {
+        const show = () => {
+            tip.innerHTML = g.dataset.tip;
+            const dot = g.querySelector('.chart-dot').getBoundingClientRect();
+            const box = wrap.getBoundingClientRect();
+            let left = dot.left - box.left + dot.width / 2 - tip.offsetWidth / 2;
+            left = Math.max(8, Math.min(left, box.width - tip.offsetWidth - 8));
+            tip.style.left = left + 'px';
+            tip.style.top = (dot.top - box.top - tip.offsetHeight - 10) + 'px';
+            tip.style.opacity = 1;
+        };
+        g.addEventListener('mouseenter', show);
+        g.addEventListener('click', show);
+        g.addEventListener('mouseleave', () => { tip.style.opacity = 0; });
+    });
+</script>
+
+</body>
+</html>
