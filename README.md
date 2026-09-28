@@ -6,7 +6,9 @@ Personal website and portfolio for Sasidhar Chintapalli — hosted on GitHub Pag
 
 ```
 ├── index.html                        # Single-page site (Hero, Projects, Blog)
-├── Sasidhar_Chintapalli_Resume.docx  # Resume
+├── Sasidhar_Chintapalli_Resume.docx  # Resume source (edit this)
+├── Sasidhar_Chintapalli_Resume.pdf   # Resume the site links to (generated)
+├── scripts/build_resume_pdf.py       # Regenerates the PDF from the .docx
 ├── favicon.svg                       # Site icon
 ├── CNAME                             # Custom domain → sasidhar.co.in
 ├── .gitignore
@@ -25,3 +27,13 @@ Personal website and portfolio for Sasidhar Chintapalli — hosted on GitHub Pag
 - LinkedIn: [linkedin.com/in/sasich](https://www.linkedin.com/in/sasich)
 - GitHub: [github.com/codersasi](https://github.com/codersasi)
 - Medium: [medium.com/@sasidharc](https://medium.com/@sasidharc)
+
+## Updating the resume
+
+Edit `Sasidhar_Chintapalli_Resume.docx` in Word, then regenerate the PDF the site serves:
+
+```bash
+python3 scripts/build_resume_pdf.py
+```
+
+Requires Google Chrome (used headless to print the PDF). Avoid re-saving the .docx from TextEdit — it strips the fonts, section rules and indents.
